@@ -1,3 +1,4 @@
 *.log
 *.back
 *_Runs
+.idea
