@@ -2,3 +2,5 @@
 *.back
 *_Runs
 .idea
+*.vvp
+*.vcd

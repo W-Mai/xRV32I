@@ -28,9 +28,12 @@
     <TOP_MODULE>
         <LABEL></LABEL>
         <MODULE>pc_reg</MODULE>
-        <CREATEINDEX>auto</CREATEINDEX>
+        <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Property>
+        <SimProperty>
+            <lib>D:/Prog/altera/13.1/modelsim_ase/modelsim_lib</lib>
+        </SimProperty>
     </Property>
     <Device_Settings>
     </Device_Settings>
@@ -42,6 +45,13 @@
                 <DesignProperty>
                     <infer_fsm>onehot</infer_fsm>
                 </DesignProperty>
+                <GateProperty>
+                    <gate_sim_model>on</gate_sim_model>
+                    <map_sim_model>on</map_sim_model>
+                </GateProperty>
+                <RtlProperty>
+                    <rtl_sim_model>on</rtl_sim_model>
+                </RtlProperty>
             </Strategy>
         </Run>
         <Run Name="phy_1" Type="PhysicalDesign" ConstraintSet="constrain_1" Description="" SynRun="syn_1" Active="true">
@@ -49,6 +59,12 @@
                 <BitgenProperty::GeneralOption>
                     <s>off</s>
                 </BitgenProperty::GeneralOption>
+                <RouteProperty>
+                    <phy_sim_model>on</phy_sim_model>
+                </RouteProperty>
+                <TimingProperty>
+                    <sdf>on</sdf>
+                </TimingProperty>
             </Strategy>
         </Run>
     </Runs>
