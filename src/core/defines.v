@@ -5,7 +5,7 @@
 
 `define RegistersNumWidth           5                           // 寄存器个数宽度为5位
 `define InstAddressBusWidth         32                          // 实际指令地址宽度为32位
-`define RegisterAddressBusWidth     1 << `RegistersNumWidth     // 寄存器地址宽度为32位
+`define RegisterAddressBusWidth     `RegistersNumWidth          // 寄存器地址宽度为32位
 `define InstByteWidth               32                          // 实际指令字节宽度为32位
 `define RegistersByteWidth          32                          // 寄存器字节宽度为32位
 
