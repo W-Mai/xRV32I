@@ -40,9 +40,8 @@
 `define INST_REGBus      `RegistersAddressBus
 `define INST_FUNC3Bus    2:0
 `define INST_FUNC7Bus    6:0
-`define INST_IMM5Bus     5:0
-`define INST_IMM12Bus    11:0
-`define INST_IMM20Bus    19:0 
+`define INST_IMMBus      (`InstByteWidth-1):0
+`define INST_SHAMTBus    4:0
 
 // RV32I指令集 共计 10 + 9 + 5 + 1 + 2 + 2 + 6 + 3 + 6 + 1 + 1 + 1 = 47 条指令
 `define INST_TYPE_R         7'b0110011      // 10 条 R-type 指令: add, sub, xor, or, and, sll, srl, sra, slt, sltu
