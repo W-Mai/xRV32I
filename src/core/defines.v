@@ -8,6 +8,7 @@
 `define InstByteWidth `InstAddressBusWidth/8
 
 `define InstAddressBus (`InstAddressBusWidth-1):0
+`define InstByteBus (`InstAddressBusWidth-1):0
 
 `define CPURstAddress `InstAddressBusWidth'h0
 
