@@ -42,10 +42,29 @@ class Core_IF_ID(ModelBoxBaseModel):
         name = 'Core/IF_ID'
 
 
+class Core_REGS(ModelBoxBaseModel):
+    CLK = Wire('CLK')
+    RST = Wire('RST')
+
+    Write_En_In = Wire('Write_En_In')
+    Write_Addr_In = Wire('Write_Addr_In', (0, 31))
+    Write_Data_In = Wire('Write_Data_In', (0, 31))
+
+    Read_Addr1_In = Wire('Read_Addr1_In', (0, 31))
+    Read_Addr2_In = Wire('Read_Addr2_In', (0, 31))
+
+    Read_Data1_Out = Wire('Read_Data1_Out', (0, 31))
+    Read_Data2_Out = Wire('Read_Data2_Out', (0, 31))
+
+    class Meta:
+        name = 'Core/REGS'
+
+
 CONFIG = CONFIGURE(
     node_pos_pair={
         Core_PC_REG: (-10, 0),
         Core_IF: (0, -5),
         Core_IF_ID: (10, 0),
+        Core_REGS: (0, 10),
     }, other_conf={}
 )
