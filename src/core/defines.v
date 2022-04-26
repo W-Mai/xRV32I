@@ -35,3 +35,18 @@
 
 
 `define INST_NOP    32'h00000013
+
+
+// RV32I指令集 共计 10 + 9 + 5 + 1 + 2 + 2 + 6 + 3 + 6 + 1 + 1 + 1 = 47 条指令
+`define INST_TYPE_R         7'b0110011      // 10 条 R-type 指令: add, sub, xor, or, and, sll, srl, sra, slt, sltu
+`define INST_TYPE_I         7'b0010011      //  9 条 I-type 指令: addi, xori, ori, andi, slli, srli, srai, slti, sltiu
+`define INST_TYPE_IL        7'b0010011      //  5 条 I-type 指令: lb, lh, lw, lbu, lhu
+`define INST_TYPE_IJ        7'b1100111      //  1 条 I-type 指令: jalr
+`define INST_TYPE_IE        7'b1110011      //  2 条 I-type 指令: ecall, ebreak
+`define INST_TYPE_IF        7'b0001111      //  2 条 I-type 指令: fence, fence.i
+`define INST_TYPE_IC        7'b1110011      //  6 条 I-type 指令: csrrw, csrrs, csrrc, csrrwi, csrrsi, csrrci
+`define INST_TYPE_S         7'b0100011      //  3 条 S-type 指令: sb, sh, sw
+`define INST_TYPE_B         7'b1100011      //  6 条 B-type 指令: beq, bne, blt, bge, bltu, bgeu
+`define INST_TYPE_U_lui     7'b0110111      //  1 条 U-type 指令: lui
+`define INST_TYPE_U_auipc   7'b0010111      //  1 条 U-type 指令: auipc
+`define INST_TYPE_J         7'b1101111      //  1 条 J-type 指令: jal
