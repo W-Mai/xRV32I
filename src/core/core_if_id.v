@@ -5,7 +5,7 @@
 
 `include "../core/defines.v"
 
-module core_pc_reg(
+module core_if_id(
 	input wire clk,
 	input wire rst,
 
