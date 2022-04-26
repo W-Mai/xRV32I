@@ -9,12 +9,20 @@
     </HardWare>
     <Source_Files>
         <Verilog>
-            <File Path="core/pc_reg.v">
+            <File Path="core/core_pc_reg.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
                     <Attr Name="CompileOrder" Val="1"/>
+                </FileInfo>
+            </File>
+            <File Path="core/defines.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="2"/>
                 </FileInfo>
             </File>
         </Verilog>
@@ -26,8 +34,8 @@
         </FileSet>
     </FileSets>
     <TOP_MODULE>
-        <LABEL></LABEL>
-        <MODULE>pc_reg</MODULE>
+        <LABEL>EG_PHY_SDRAM/rom</LABEL>
+        <MODULE>rom</MODULE>
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Property>
