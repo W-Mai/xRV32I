@@ -34,4 +34,26 @@ always @(posedge clk) begin
     end
 end
 
+// 读寄存器1
+always @(*) begin
+    if (read_addr1_in == `ZeroReg)
+        read_data1_out = `ZeroWord;
+    else if (read_addr1_in == write_addr_in && we_in == `WriteEnable)
+    // 写寄存器地址和读寄存器1地址相同，且写寄存器使能，则直接把写寄存器数据读出
+        read_data1_out = write_data_in;
+    else
+        read_data1_out = regs[read_addr1_in];
+end
+
+// 读寄存器2
+always @(*) begin
+    if (read_addr2_in == `ZeroReg)
+        read_data2_out = `ZeroWord;
+    else if (read_addr2_in == write_addr_in && we_in == `WriteEnable)
+    // 写寄存器地址和读寄存器2地址相同，且写寄存器使能，则直接把写寄存器数据读出
+        read_data2_out = write_data_in;
+    else
+        read_data2_out = regs[read_addr2_in];
+end
+
 endmodule
