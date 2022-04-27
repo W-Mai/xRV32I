@@ -36,15 +36,22 @@
 `define JumpEnable  1'b1
 `define JumpDisable 1'b0
 
+`define INST_OPCODEWidth    7
+`define INST_REGBusWidth    `RegisterAddressBusWidth
+`define INST_FUNC3Width     3
+`define INST_FUNC7Width     7
+`define INST_IMMBusWidth    `InstByteWidth
+`define INST_SHAMTWidth     5
 
 `define INST_NOP    32'h00000013
 
-`define INST_OPCODEBus   6:0
-`define INST_REGBus      `RegistersAddressBus
-`define INST_FUNC3Bus    2:0
-`define INST_FUNC7Bus    6:0
-`define INST_IMMBus      (`InstByteWidth-1):0
-`define INST_SHAMTBus    4:0
+`define INST_OPCODEBus   (`INST_OPCODEWidth-1)  :0
+`define INST_REGBus      (`INST_REGBusWidth-1)     :0
+`define INST_FUNC3Bus    (`INST_FUNC3Width-1)   :0
+`define INST_FUNC7Bus    (`INST_FUNC7Width-1)   :0
+`define INST_IMMBus      (`INST_IMMBusWidth-1)     :0
+`define INST_SHAMTBus    (`INST_SHAMTWidth-1)   :0
+
 
 // RV32I指令集 共计 10 + 9 + 5 + 1 + 2 + 2 + 6 + 3 + 6 + 1 + 1 + 1 = 47 条指令
 `define INST_TYPE_R         7'b0110011      // 10 条 R-type 指令: add, sub, xor, or, and, sll, srl, sra, slt, sltu
