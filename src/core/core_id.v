@@ -28,7 +28,10 @@ module core_id(
     output reg                          reg_we_out,             // 写通用寄存器标志
     output reg[`RegistersAddressBus]    reg_write_addr_out,     // 写通用寄存器地址
     output reg[`RegistersByteBus]       reg1_data_out,          // 通用寄存器1数据
-    output reg[`RegistersByteBus]       reg2_data_out           // 通用寄存器2数据
+    output reg[`RegistersByteBus]       reg2_data_out,          // 通用寄存器2数据
+        // data
+    output reg[`MemByteBus]             opnum1,                 // 操作数1
+    output reg[`MemByteBus]             opnum2                  // 操作数2
 );
 
 wire[`INST_OPCODEBus]   opcode;                         // 指令操作码
@@ -58,24 +61,59 @@ always @(*) begin
     inst_addr_out       = inst_addr_in;
     reg1_data_out       = read_reg1_data_in;
     reg2_data_out       = read_reg2_data_in;
+    opnum1              = `ZeroWord;
+    opnum2              = `ZeroWord;
 
     // 判断指令操作码
     case(opcode)
         `INST_TYPE_R      : begin
-            casex (func3)
-                
+            case (func3)
+                `INST_FUNC3_ADD  : begin
+                    reg_we_out          = `WriteEnable;
+                    reg_write_addr_out  = rd;
+                    write_reg1_addr_out = rs1;
+                    write_reg2_addr_out = rs2;
+                    
+                    opnum1 = rs1;
+                    opnum2 = rs2;
+                end
+                default : begin
+                    reg_we_out          = `WriteDisable;
+                    reg_write_addr_out  = `ZeroReg;
+                    write_reg1_addr_out = `ZeroReg;
+                    write_reg2_addr_out = `ZeroReg;
+                end
+
             endcase
         end
 
         `INST_TYPE_I      : begin
-            
+            case (func3)
+                `INST_FUNC3_ADDI  : begin
+                    reg_we_out          = `WriteEnable;
+                    reg_write_addr_out  = rd;
+                    write_reg1_addr_out = rs1;
+                    write_reg2_addr_out = `ZeroReg;
+                    
+                    opnum1 = rs1;
+                    opnum2 = immI;
+                end
+                default : begin
+                    reg_we_out          = `WriteDisable;
+                    reg_write_addr_out  = `ZeroReg;
+                    write_reg1_addr_out = `ZeroReg;
+                    write_reg2_addr_out = `ZeroReg;
+                end
+
+            endcase
         end
 
-        default:
+        default : begin
             reg_we_out          = `WriteDisable;
             reg_write_addr_out  = `ZeroReg;
-            write_reg1_addr_out = `ZeroReg,
-            write_reg2_addr_out = `ZeroReg;,
+            write_reg1_addr_out = `ZeroReg;
+            write_reg2_addr_out = `ZeroReg;
+        end
     endcase
 end
 
