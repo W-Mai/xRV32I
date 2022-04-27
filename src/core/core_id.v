@@ -52,5 +52,31 @@ assign immU     =       inst_in[31:12];
 assign immJ     =       {{12{inst_in[31]}}, inst_in[19:12], inst_in[20], inst_in[30:21], 1'b0};
 assign shamt    =       {27'b0, inst_in[24:20]};
 
+// 一个巨大的组合逻辑电路用来解析指令
+always @(*) begin
+    inst_out            = inst_in;
+    inst_addr_out       = inst_addr_in;
+    reg1_data_out       = read_reg1_data_in;
+    reg2_data_out       = read_reg2_data_in;
+
+    // 判断指令操作码
+    case(opcode)
+        `INST_TYPE_R      : begin
+            casex (func3)
+                
+            endcase
+        end
+
+        `INST_TYPE_I      : begin
+            
+        end
+
+        default:
+            reg_we_out          = `WriteDisable;
+            reg_write_addr_out  = `ZeroReg;
+            write_reg1_addr_out = `ZeroReg,
+            write_reg2_addr_out = `ZeroReg;,
+    endcase
+end
 
 endmodule
