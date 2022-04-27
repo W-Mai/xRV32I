@@ -5,7 +5,7 @@
 
 `define RegistersNumWidth           5                           // 寄存器个数宽度为5位
 `define InstAddressBusWidth         32                          // 实际指令地址宽度为32位
-`define RegisterAddressBusWidth     1 << `RegistersNumWidth     // 寄存器地址宽度为32位
+`define RegisterAddressBusWidth     `RegistersNumWidth          // 寄存器地址宽度为32位
 `define InstByteWidth               32                          // 实际指令字节宽度为32位
 `define RegistersByteWidth          32                          // 寄存器字节宽度为32位
 
@@ -13,7 +13,8 @@
 `define InstByteBus         (`InstByteWidth-1)              :0   // 实际指令字节描述符
 `define RegistersAddressBus (`RegisterAddressBusWidth-1)    :0   // 寄存器地址描述符
 `define RegistersByteBus    (`RegistersByteWidth-1)         :0   // 寄存器字节描述符
-
+`define MemAddressBus       (`RegistersByteWidth-1)         :0   // 内存地址描述符
+`define MemByteBus          (`RegistersByteWidth-1)         :0   // 数据字节描述符
 
 `define CPURstAddress `InstAddressBusWidth'h0
 
@@ -35,3 +36,58 @@
 
 
 `define INST_NOP    32'h00000013
+
+`define INST_OPCODEBus   6:0
+`define INST_REGBus      `RegistersAddressBus
+`define INST_FUNC3Bus    2:0
+`define INST_FUNC7Bus    6:0
+`define INST_IMMBus      (`InstByteWidth-1):0
+`define INST_SHAMTBus    4:0
+
+// RV32I指令集 共计 10 + 9 + 5 + 1 + 2 + 2 + 6 + 3 + 6 + 1 + 1 + 1 = 47 条指令
+`define INST_TYPE_R         7'b0110011      // 10 条 R-type 指令: add, sub, xor, or, and, sll, srl, sra, slt, sltu
+`define INST_TYPE_I         7'b0010011      //  9 条 I-type 指令: addi, xori, ori, andi, slli, srli, srai, slti, sltiu
+`define INST_TYPE_IL        7'b0010011      //  5 条 I-type 指令: lb, lh, lw, lbu, lhu
+`define INST_TYPE_IJ        7'b1100111      //  1 条 I-type 指令: jalr
+`define INST_TYPE_IE        7'b1110011      //  2 条 I-type 指令: ecall, ebreak
+`define INST_TYPE_IF        7'b0001111      //  2 条 I-type 指令: fence, fence.i
+`define INST_TYPE_IC        7'b1110011      //  6 条 I-type 指令: csrrw, csrrs, csrrc, csrrwi, csrrsi, csrrci
+`define INST_TYPE_S         7'b0100011      //  3 条 S-type 指令: sb, sh, sw
+`define INST_TYPE_B         7'b1100011      //  6 条 B-type 指令: beq, bne, blt, bge, bltu, bgeu
+`define INST_TYPE_U_lui     7'b0110111      //  1 条 U-type 指令: lui
+`define INST_TYPE_U_auipc   7'b0010111      //  1 条 U-type 指令: auipc
+`define INST_TYPE_J         7'b1101111      //  1 条 J-type 指令: jal
+
+// R-type 指令
+`define INST_FUNC3_ADD      3'b000
+`define INST_FUNC3_SUB      3'b000
+`define INST_FUNC3_XOR      3'b100
+`define INST_FUNC3_OR       3'b110
+`define INST_FUNC3_AND      3'b111
+`define INST_FUNC3_SLL      3'b001
+`define INST_FUNC3_SRL      3'b101
+`define INST_FUNC3_SRA      3'b101
+`define INST_FUNC3_SLT      3'b010
+`define INST_FUNC3_SLTU     3'b011
+
+`define INST_FUNC7_ADD      7'b000_0000
+`define INST_FUNC7_SUB      7'b010_0000
+`define INST_FUNC7_XOR      7'b000_0000
+`define INST_FUNC7_OR       7'b000_0000
+`define INST_FUNC7_AND      7'b000_0000
+`define INST_FUNC7_SLL      7'b000_0000
+`define INST_FUNC7_SRL      7'b000_0000
+`define INST_FUNC7_SRA      7'b010_0000
+`define INST_FUNC7_SLT      7'b000_0000
+`define INST_FUNC7_SLTU     7'b000_0000
+
+// I-type 指令
+`define INST_FUNC3_ADDI     3'b000
+`define INST_FUNC3_XORI     3'b100
+`define INST_FUNC3_ORI      3'b110
+`define INST_FUNC3_ANDI     3'b111
+`define INST_FUNC3_SLLI     3'b001
+`define INST_FUNC3_SRLI     3'b101
+`define INST_FUNC3_SRAI     3'b101
+`define INST_FUNC3_SLTI     3'b010
+`define INST_FUNC3_SLTIU    3'b011
