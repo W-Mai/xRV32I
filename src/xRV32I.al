@@ -25,6 +25,14 @@
                     <Attr Name="CompileOrder" Val="2"/>
                 </FileInfo>
             </File>
+            <File Path="core/core_id.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="3"/>
+                </FileInfo>
+            </File>
         </Verilog>
     </Source_Files>
     <FileSets>
@@ -34,8 +42,8 @@
         </FileSet>
     </FileSets>
     <TOP_MODULE>
-        <LABEL>EG_PHY_SDRAM/rom</LABEL>
-        <MODULE>rom</MODULE>
+        <LABEL></LABEL>
+        <MODULE>core_pc_reg</MODULE>
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Property>
