@@ -8,13 +8,15 @@
 `define RegisterAddressBusWidth     `RegistersNumWidth          // 寄存器地址宽度为32位
 `define InstByteWidth               32                          // 实际指令字节宽度为32位
 `define RegistersByteWidth          32                          // 寄存器字节宽度为32位
+`define MemAddressBusWidth          32                          // 内存地址宽度为32位
+`define MemByteWidth                32                          // 内存字节宽度为32位
 
 `define InstAddressBus      (`InstAddressBusWidth-1)        :0   // 实际指令地址描述符
 `define InstByteBus         (`InstByteWidth-1)              :0   // 实际指令字节描述符
 `define RegistersAddressBus (`RegisterAddressBusWidth-1)    :0   // 寄存器地址描述符
 `define RegistersByteBus    (`RegistersByteWidth-1)         :0   // 寄存器字节描述符
-`define MemAddressBus       (`RegistersByteWidth-1)         :0   // 内存地址描述符
-`define MemByteBus          (`RegistersByteWidth-1)         :0   // 数据字节描述符
+`define MemAddressBus       (`MemAddressBusWidth-1)         :0   // 内存地址描述符
+`define MemByteBus          (`MemByteWidth-1)         :0   // 数据字节描述符
 
 `define CPURstAddress `InstAddressBusWidth'h0
 
