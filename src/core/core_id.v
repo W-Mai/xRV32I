@@ -30,8 +30,8 @@ module core_id(
     output reg[`RegistersByteBus]       reg1_data_out,          // 通用寄存器1数据
     output reg[`RegistersByteBus]       reg2_data_out,          // 通用寄存器2数据
         // data
-    output reg[`MemByteBus]             opnum1,                 // 操作数1
-    output reg[`MemByteBus]             opnum2,                 // 操作数2
+    output reg[`MemByteBus]             opnum1_out,             // 操作数1
+    output reg[`MemByteBus]             opnum2_out,             // 操作数2
         // decoded signals
     output reg[`INST_OPCODEBus]         opcode_out,             // 指令操作码
     output reg[`INST_FUNC3Bus]          func3_out,              // func3
@@ -75,8 +75,8 @@ always @(*) begin
     inst_addr_out       = inst_addr_in;
     reg1_data_out       = read_reg1_data_in;
     reg2_data_out       = read_reg2_data_in;
-    opnum1              = `ZeroWord;
-    opnum2              = `ZeroWord;
+    opnum1_out          = `ZeroWord;
+    opnum2_out          = `ZeroWord;
 
     // 输出解码后的信号
     opcode_out          = opcode;
@@ -102,8 +102,8 @@ always @(*) begin
                     write_reg1_addr_out = rs1;
                     write_reg2_addr_out = rs2;
                     
-                    opnum1 = rs1;
-                    opnum2 = rs2;
+                    opnum1_out = rs1;
+                    opnum2_out = rs2;
                 end
                 default : begin
                     reg_we_out          = `WriteDisable;
@@ -123,8 +123,8 @@ always @(*) begin
                     write_reg1_addr_out = rs1;
                     write_reg2_addr_out = `ZeroReg;
                     
-                    opnum1 = rs1;
-                    opnum2 = immI;
+                    opnum1_out = rs1;
+                    opnum2_out = immI;
                 end
                 default : begin
                     reg_we_out          = `WriteDisable;
