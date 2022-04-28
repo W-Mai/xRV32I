@@ -27,7 +27,7 @@ always @(*) begin
             `ALUFunc_AND:   res_out <= opnum1_in & opnum2_in;
             `ALUFunc_SLL:   res_out <= opnum1_in << opnum2_in[4:0];
             `ALUFunc_SRL:   res_out <= opnum1_in >> opnum2_in[4:0];
-            `ALUFunc_SRA:   res_out <= $signed(opnum1_in) >> opnum2_in;
+            `ALUFunc_SRA:   res_out <= $signed(opnum1_in) >>> (opnum2_in);
             `ALUFunc_SLT:   res_out <= ($signed(opnum1_in) < $signed(opnum2_in)) ? 1 : 0;
             `ALUFunc_SLTU:  res_out <= (opnum1_in < opnum2_in) ? 1 : 0;
 
