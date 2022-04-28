@@ -80,8 +80,10 @@ class Core_ID(ModelBoxBaseModel):
     Reg1_Data_Out = Wire('Reg1_Data(ID, ID_EX)', (0, 31))
     Reg2_Data_Out = Wire('Reg2_Data(ID, ID_EX)', (0, 31))
 
+    Eval_Enable_Out = Wire('Eval_Enable(ID, ID_EX)')
     Opnum1_Out = Wire('Opnum1(ID, ID_EX)', (0, 31))
     Opnum2_Out = Wire('Opnum2(ID, ID_EX)', (0, 31))
+    Func_Out = Wire('Func(ID, ID_EX)', (0, 31))
 
     Opcode_Out = Wire('Opcode(ID, ID_EX)', (0, 7))
     Func3_Out = Wire('Func3(ID, ID_EX)', (0, 3))
@@ -110,8 +112,12 @@ class Core_ID_EX(ModelBoxBaseModel):
     Reg_Write_Addr_In = Wire('Reg_Write_Addr(ID, ID_EX)', (0, 31))
     Reg1_Data_In = Wire('Reg1_Data(ID, ID_EX)', (0, 31))
     Reg2_Data_In = Wire('Reg2_Data(ID, ID_EX)', (0, 31))
+
+    Eval_Enable_In = Wire('Eval_Enable(ID, ID_EX)')
     Opnum1_In = Wire('Opnum1(ID, ID_EX)', (0, 31))
     Opnum2_In = Wire('Opnum2(ID, ID_EX)', (0, 31))
+    Func_In = Wire('Func(ID, ID_EX)', (0, 31))
+
     Opcode_In = Wire('Opcode(ID, ID_EX)', (0, 7))
     Func3_In = Wire('Func3(ID, ID_EX)', (0, 3))
     Func7_In = Wire('Func7(ID, ID_EX)', (0, 7))
@@ -133,8 +139,12 @@ class Core_ID_EX(ModelBoxBaseModel):
     Reg_Write_Addr_Out = Wire('Reg_Write_Addr_Out', (0, 31))
     Reg1_Data_Out = Wire('Reg1_Data_Out', (0, 31))
     Reg2_Data_Out = Wire('Reg2_Data_Out', (0, 31))
-    Opnum1_Out = Wire('Opnum1_Out', (0, 31))
-    Opnum2_Out = Wire('Opnum2_Out', (0, 31))
+
+    Eval_Enable_Out = Wire('Eval_Enable(ID_EX, ALU)')
+    Opnum1_Out = Wire('Opnum1(ID_EX, ALU)', (0, 31))
+    Opnum2_Out = Wire('Opnum2(ID_EX, ALU)', (0, 31))
+    Func_Out = Wire('Func(ID_EX, ALU)', (0, 31))
+
     Opcode_Out = Wire('Opcode_Out', (0, 7))
     Func3_Out = Wire('Func3_Out', (0, 3))
     Func7_Out = Wire('Func7_Out', (0, 7))
@@ -152,6 +162,20 @@ class Core_ID_EX(ModelBoxBaseModel):
         name = 'Core/ID_EX'
 
 
+class Core_ALU(ModelBoxBaseModel):
+    Eval_Enable = Wire('Eval_Enable(ID_EX, ALU)')
+
+    Opnum1_In = Wire('Opnum1(ID_EX, ALU)', (0, 31))
+    Opnum2_In = Wire('Opnum2(ID_EX, ALU)', (0, 31))
+
+    Func_In = Wire('Func(ID_EX, ALU)', (0, 4))
+
+    Res_Out = Wire('Res(ALU, EX)', (0, 31))
+
+    class Meta:
+        name = 'Core/ALU'
+
+
 CONFIG = CONFIGURE(
     node_pos_pair={
         Core_PC_REG: (-10, 0),
@@ -159,6 +183,7 @@ CONFIG = CONFIGURE(
         Core_IF_ID: (10, 8.6),
         Core_REGS: (0, 8),
         Core_ID: (20, 6.8),
-        Core_ID_EX: (38, 10),
+        Core_ID_EX: (38, 12),
+        Core_ALU: (31, -20),
     }, other_conf={}
 )
