@@ -18,7 +18,7 @@ module core_alu(
 
 
 always @(*) begin
-    if (eval_en) begin
+    if (eval_en == `ALUEnable) begin
         case (func_in)
             `ALUFunc_ADD:   res_out <= opnum1_in + opnum2_in;
             `ALUFunc_SUB:   res_out <= opnum1_in - opnum2_in;

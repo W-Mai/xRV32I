@@ -26,6 +26,8 @@
 `define RstDisable      1'b1
 `define WriteEnable     1'b1
 `define WriteDisable    1'b0
+`define ALUEnable       1'b1
+`define ALUDisable      1'b0
 `define ZeroWord        32'h0
 `define ZeroReg         5'h0
 
