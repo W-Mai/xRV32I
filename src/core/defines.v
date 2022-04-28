@@ -10,13 +10,15 @@
 `define RegistersByteWidth          32                          // 寄存器字节宽度为32位
 `define MemAddressBusWidth          32                          // 内存地址宽度为32位
 `define MemByteWidth                32                          // 内存字节宽度为32位
+`define ALUFuncBusWidth             5                           // ALU功能宽度为5位
 
 `define InstAddressBus      (`InstAddressBusWidth-1)        :0   // 实际指令地址描述符
 `define InstByteBus         (`InstByteWidth-1)              :0   // 实际指令字节描述符
 `define RegistersAddressBus (`RegisterAddressBusWidth-1)    :0   // 寄存器地址描述符
 `define RegistersByteBus    (`RegistersByteWidth-1)         :0   // 寄存器字节描述符
 `define MemAddressBus       (`MemAddressBusWidth-1)         :0   // 内存地址描述符
-`define MemByteBus          (`MemByteWidth-1)         :0   // 数据字节描述符
+`define MemByteBus          (`MemByteWidth-1)               :0   // 数据字节描述符
+`define ALUFuncBus          (`ALUFuncBusWidth-1)            :0   // ALU功能描述符
 
 `define CPURstAddress `InstAddressBusWidth'h0
 
@@ -100,3 +102,19 @@
 `define INST_FUNC3_SRAI     3'b101
 `define INST_FUNC3_SLTI     3'b010
 `define INST_FUNC3_SLTIU    3'b011
+
+
+// ############################## ALU Begin #####################################
+
+`define ALUFunc_ADD         5'b00000
+`define ALUFunc_SUB         5'b00001
+`define ALUFunc_XOR         5'b00010
+`define ALUFunc_OR          5'b00011
+`define ALUFunc_AND         5'b00100
+`define ALUFunc_SLL         5'b00101
+`define ALUFunc_SRL         5'b00110
+`define ALUFunc_SRA         5'b00111
+`define ALUFunc_SLT         5'b01000
+`define ALUFunc_SLTU        5'b01001
+
+// ############################## ALU End #######################################
