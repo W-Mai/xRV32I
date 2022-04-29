@@ -19,8 +19,10 @@ module core_id_ex(
     input wire[`RegistersByteBus]      reg1_data_in,          // 通用寄存器1数据
     input wire[`RegistersByteBus]      reg2_data_in,          // 通用寄存器2数据
         // data
+    input wire                         eval_en_in,            // 计算使能
     input wire[`MemByteBus]            opnum1_in,             // 操作数1
     input wire[`MemByteBus]            opnum2_in,             // 操作数2
+    input wire[`ALUFuncBus]            func_in,               // ALU功能
         // decoded signals
     input wire[`INST_OPCODEBus]        opcode_in,             // 指令操作码
     input wire[`INST_FUNC3Bus]         func3_in,              // func3
@@ -46,8 +48,10 @@ module core_id_ex(
     output wire[`RegistersByteBus]     reg1_data_out,         // 通用寄存器1数据
     output wire[`RegistersByteBus]     reg2_data_out,         // 通用寄存器2数据
         // data
-    output wire[`MemByteBus]           opnum1_out,            // 操作数1
-    output wire[`MemByteBus]           opnum2_out,            // 操作数2
+    output wire                         eval_en_out,          // 计算使能
+    output wire[`MemByteBus]            opnum1_out,           // 操作数1
+    output wire[`MemByteBus]            opnum2_out,           // 操作数2
+    output wire[`ALUFuncBus]            func_out,             // ALU功能
         // decoded signals
     output wire[`INST_OPCODEBus]       opcode_out,            // 指令操作码
     output wire[`INST_FUNC3Bus]        func3_out,             // func3
@@ -69,8 +73,12 @@ gen_ff #(1)                     reg_we_ff(clk, rst,         `WriteDisable,  reg_
 gen_ff #(`RegistersNumWidth)    reg_write_addr_ff(clk, rst, `ZeroReg,       reg_write_addr_in,  reg_write_addr_out  );
 gen_ff #(`RegistersByteWidth)   reg1_data_ff(clk, rst,      `ZeroWord,      reg1_data_in,       reg1_data_out       );
 gen_ff #(`RegistersByteWidth)   reg2_data_ff(clk, rst,      `ZeroWord,      reg2_data_in,       reg2_data_out       );
+
+// ALU相关，重置之后不计算，并且默认按照ADD指令输出即NOP
+gen_ff #(1)                     eval_en_ff(clk, rst,        `ALUDisable,    eval_en_in,         eval_en_out         );
 gen_ff #(`MemByteWidth)         opnum1_ff(clk, rst,         `ZeroWord,      opnum1_in,          opnum1_out          );
 gen_ff #(`MemByteWidth)         opnum2_ff(clk, rst,         `ZeroWord,      opnum2_in,          opnum2_out          );
+gen_ff #(`ALUFuncBusWidth)      func_ff(clk, rst,           `ALUFunc_ADD,   func_in,            func_out            );
 
 // 重置后为NOP指令，以下输出NOP指令相关即可
 gen_ff #(`INST_OPCODEWidth)     opcode_ff(clk, rst,     `INST_TYPE_I,           opcode_in,      opcode_out          );

@@ -30,8 +30,10 @@ module core_id(
     output reg[`RegistersByteBus]       reg1_data_out,          // 通用寄存器1数据
     output reg[`RegistersByteBus]       reg2_data_out,          // 通用寄存器2数据
         // data
+    output reg                          eval_en,                // 计算使能
     output reg[`MemByteBus]             opnum1_out,             // 操作数1
     output reg[`MemByteBus]             opnum2_out,             // 操作数2
+    output reg[`ALUFuncBus]             func_out,               // ALU功能
         // decoded signals
     output reg[`INST_OPCODEBus]         opcode_out,             // 指令操作码
     output reg[`INST_FUNC3Bus]          func3_out,              // func3
@@ -141,6 +143,30 @@ always @(*) begin
             reg_write_addr_out  = `ZeroReg;
             write_reg1_addr_out = `ZeroReg;
             write_reg2_addr_out = `ZeroReg;
+        end
+    endcase
+end
+
+
+// 输出ALU控制信号
+always @(*) begin
+    case (opcode)
+        `INST_TYPE_R, `INST_TYPE_I      : begin
+            eval_en  = `ALUEnable;
+            case (func3)
+                `INST_FUNC3_ADD, `INST_FUNC3_ADDI, `INST_FUNC3_SUB : begin
+                    func_out = func7 == `INST_FUNC7_ADD ? `ALUFunc_ADD : `ALUFunc_SUB;
+                end
+
+
+                default : begin
+                    func_out = `ALUFunc_ADD;
+                end
+            endcase
+        end
+        default : begin
+            eval_en  = `ALUDisable;
+            func_out = `ALUFunc_ADD;
         end
     endcase
 end
