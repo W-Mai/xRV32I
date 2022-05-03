@@ -1,4 +1,8 @@
-from FrameworkDrawer.FrameworkNode import ModelBoxBaseModel, Reg, Wire, CONFIGURE
+import random
+
+from FrameworkDrawer.FrameworkNode import ModelBoxBaseModel, Reg, Wire, CONFIGURE, Connector
+
+from color_utils import hsl_to_rgb, color_hex
 
 
 class Core_PC_REG(ModelBoxBaseModel):
@@ -224,6 +228,11 @@ CONFIG = CONFIGURE(
         Core_ID: (20, 6.8),
         Core_ID_EX: (38, 12),
         Core_ALU: (44, 7.8),
-        Core_EX: (60, 12),
+        Core_EX: (56, 12),
+    }, connector_pair={
+        Connector(Core_EX.Reg_We_Out, Core_REGS.Write_En_In, (56, 14), (-3, 14)),
+        Connector(Core_EX.Reg_Write_Addr_Out, Core_REGS.Write_Addr_In, (56, 14.25), (-3, 14.25)),
+        Connector(Core_EX.Reg_Write_Data_Out, Core_REGS.Write_Data_In, (56, 14.5), (-3, 14.5)),
     }, other_conf={}
+    , colors=[color_hex(*hsl_to_rgb(h, 0.5, 0.5)) for h in [0 + i * 1 / 32 for i in range(32)]]
 )
