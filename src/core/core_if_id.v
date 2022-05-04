@@ -9,8 +9,8 @@ module core_if_id(
 	input wire clk,
 	input wire rst,
 
-    output wire[`InstAddressBus]    inst_addr_in    , // 指令地址
-    output wire[`InstByteBus]       inst_in         , // 指令
+    input wire[`InstAddressBus]    inst_addr_in    , // 指令地址
+    input wire[`InstByteBus]       inst_in         , // 指令
 
     output wire[`InstAddressBus]    inst_addr_out   , // 指令地址
     output wire[`InstByteBus]       inst_out          // 指令
