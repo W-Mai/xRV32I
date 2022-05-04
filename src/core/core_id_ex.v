@@ -48,10 +48,10 @@ module core_id_ex(
     output wire[`RegistersByteBus]     reg1_data_out          , // 通用寄存器1数据
     output wire[`RegistersByteBus]     reg2_data_out          , // 通用寄存器2数据
         // data
-    output wire                         eval_en_out           , // 计算使能
-    output wire[`MemByteBus]            opnum1_out            , // 操作数1
-    output wire[`MemByteBus]            opnum2_out            , // 操作数2
-    output wire[`ALUFuncBus]            func_out              , // ALU功能
+    output wire                        eval_en_out            , // 计算使能
+    output wire[`MemByteBus]           opnum1_out             , // 操作数1
+    output wire[`MemByteBus]           opnum2_out             , // 操作数2
+    output wire[`ALUFuncBus]           func_out               , // ALU功能
         // decoded signals
     output wire[`INST_OPCODEBus]       opcode_out             , // 指令操作码
     output wire[`INST_FUNC3Bus]        func3_out              , // func3
