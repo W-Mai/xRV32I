@@ -9,9 +9,9 @@ module xrv32i(
     input clk,
     input rst,
 
-    input [`InstByteBus]    inst_in         , // 指令输入
+    input  wire[`InstByteBus]    inst_in         , // 指令输入
 
-    output [`MemAddressBus] inst_addr_out     // 指令地址输出
+    output wire[`MemAddressBus]  inst_addr_out     // 指令地址输出
 );
 
 wire[`InstAddressBus] pc_reg_pc_out;
@@ -20,26 +20,26 @@ core_pc_reg pc_reg_inst(
 	.clk(clk),
 	.rst(rst),
 
-	.jump_flag_in 	(`JumpEnable   )   , // 跳转标志
-	.jump_addr_in 	(`CPURstAddress)   , // 跳转地址
+	.jump_flag_in 	(`JumpEnable   )        , // 跳转标志
+	.jump_addr_in 	(`CPURstAddress)        , // 跳转地址
 	
-	.pc_out 		(pc_reg_pc_out )   , // 当前程序计数器
+	.pc_out 		(pc_reg_pc_out )        , // 当前程序计数器
 
 	// 其他杂项
-	.hold_flag_in	(`HoldNone     )     // 暂停标志
+	.hold_flag_in	(`HoldNone     )          // 暂停标志
 );
 
-wire[`InstAddressBus]   if_addr_out;
-wire[`InstByteBus]      if_out     ;
+wire[`InstAddressBus]   if_inst_addr_out    ;
+wire[`InstByteBus]      if_inst_out         ;
 
 core_if if_inst(
-	.pc_addr_in      (pc_reg_pc_out)   , // 程序计数器地址
+	.pc_addr_in      (pc_reg_pc_out)        , // 程序计数器地址
 
-    .rom_addr_out    (inst_addr_out)   , // ROM地址
-    .rom_data_in     (inst_in      )   , // ROM数据
+    .rom_addr_out    (inst_addr_out)        , // ROM地址
+    .rom_data_in     (inst_in      )        , // ROM数据
 
-    .inst_addr_out   (if_addr_out  )   , // 指令地址
-    .inst_out        (if_out       )     // 指令
+    .inst_addr_out   (if_inst_addr_out  )   , // 指令地址
+    .inst_out        (if_inst_out       )     // 指令
 );
 
 wire[`InstAddressBus]   if_id_addr_out;
@@ -49,11 +49,11 @@ core_if_id if_id_inst(
 	.clk(clk),
 	.rst(rst),
 
-    .inst_addr_in    (if_addr_out   )   , // 指令地址
-    .inst_in         (if_out        )   , // 指令
+    .inst_addr_in    (if_inst_addr_out   )      , // 指令地址
+    .inst_in         (if_inst_out        )      , // 指令
 
-    .inst_addr_out   (if_id_addr_out)   , // 指令地址
-    .inst_out        (if_id_out     )     // 指令
+    .inst_addr_out   (if_id_addr_out)           , // 指令地址
+    .inst_out        (if_id_out     )             // 指令
 );
 
 
