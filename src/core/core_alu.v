@@ -8,12 +8,12 @@
 module core_alu(
     input eval_en,
 
-    input wire[`MemByteBus] opnum1_in,  // 操作数1
-    input wire[`MemByteBus] opnum2_in,  // operand 2
+    input wire[`MemByteBus] opnum1_in   , // 操作数1
+    input wire[`MemByteBus] opnum2_in   , // operand 2
 
-    input wire[`ALUFuncBus] func_in,    // ALU功能
+    input wire[`ALUFuncBus] func_in     , // ALU功能
 
-    output reg[`MemByteBus] res_out     // 结果
+    output reg[`MemByteBus] res_out       // 结果
 );
 
 

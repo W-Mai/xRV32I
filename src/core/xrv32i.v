@@ -9,9 +9,9 @@ module xrv32i(
     input clk,
     input rst,
 
-    input [`InstByteBus]    inst_in,        // 指令输入
+    input [`InstByteBus]    inst_in         , // 指令输入
 
-    output [`MemAddressBus] inst_addr_out,  // 指令地址输出
+    output [`MemAddressBus] inst_addr_out     // 指令地址输出
 );
 
 

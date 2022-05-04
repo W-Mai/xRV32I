@@ -11,8 +11,8 @@ module gen_ff #(
 	input wire clk,
 	input wire rst,
 
-    input wire [ff_width-1:0] default_val_in,
-    input wire [ff_width-1:0] val_in,
+    input wire [ff_width-1:0] default_val_in    ,
+    input wire [ff_width-1:0] val_in            ,
 
     output reg [ff_width-1:0] val_out
 );
