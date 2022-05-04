@@ -20,7 +20,7 @@ core_pc_reg pc_reg_inst(
 	.clk(clk),
 	.rst(rst),
 
-	.jump_flag_in 	(`JumpEnable   )        , // 跳转标志
+	.jump_flag_in 	(`JumpDisable  )        , // 跳转标志
 	.jump_addr_in 	(`CPURstAddress)        , // 跳转地址
 	
 	.pc_out 		(pc_reg_pc_out )        , // 当前程序计数器
