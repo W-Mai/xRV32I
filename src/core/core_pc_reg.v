@@ -29,7 +29,7 @@ always @(posedge clk) begin
 	end else if (hold_flag_in >= `HoldPc) begin
 		pc_out <= pc_out;
 	end else begin
-		pc_out <= pc_out + `InstByteWidth;
+		pc_out <= pc_out + (`InstByteWidth / 8);
 	end
 end
 
