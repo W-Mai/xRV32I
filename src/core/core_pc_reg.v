@@ -9,13 +9,13 @@ module core_pc_reg(
 	input wire clk,
 	input wire rst,
 
-	input wire jump_flag_in,	// 跳转标志
-	input wire[`InstAddressBus] jump_addr_in,	// 跳转地址
+	input wire jump_flag_in 					, // 跳转标志
+	input wire[`InstAddressBus] jump_addr_in 	, // 跳转地址
 	
-	output reg[`InstAddressBus] pc_out,	// 当前程序计数器
+	output reg[`InstAddressBus] pc_out 			, // 当前程序计数器
 
 	// 其他杂项
-	input wire[`HoldFlagBus] hold_flag_in	// 暂停标志
+	input wire[`HoldFlagBus] hold_flag_in		  // 暂停标志
 );
 
 always @(posedge clk) begin

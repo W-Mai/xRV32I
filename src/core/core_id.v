@@ -9,44 +9,44 @@ module core_id(
     input rst,
 
     // 来自core_if_id的信号
-    input wire[`InstByteBus]            inst_in,                // 指令内容
-    input wire[`InstAddressBus]         inst_addr_in,           // 指令地址
+    input wire[`InstByteBus]            inst_in                 , // 指令内容
+    input wire[`InstAddressBus]         inst_addr_in            , // 指令地址
 
     // 从core_regs获取的信号
-    input wire[`RegistersByteBus]       read_reg1_data_in,      // 通用寄存器1输入数据
-    input wire[`RegistersByteBus]       read_reg2_data_in,      // 通用寄存器2输入数据
+    input wire[`RegistersByteBus]       read_reg1_data_in       , // 通用寄存器1输入数据
+    input wire[`RegistersByteBus]       read_reg2_data_in       , // 通用寄存器2输入数据
 
     // 向core_regs写入的信号
-    output reg[`RegistersAddressBus]    write_reg1_addr_out,    // 读通用寄存器1地址
-    output reg[`RegistersAddressBus]    write_reg2_addr_out,    // 读通用寄存器2地址
+    output reg[`RegistersAddressBus]    write_reg1_addr_out     , // 读通用寄存器1地址
+    output reg[`RegistersAddressBus]    write_reg2_addr_out     , // 读通用寄存器2地址
 
     // 向core_ex模块写入的信号
         // inst
-    output reg[`InstByteBus]            inst_out,               // 指令内容
-    output reg[`InstAddressBus]         inst_addr_out,          // 指令地址
+    output reg[`InstByteBus]            inst_out                , // 指令内容
+    output reg[`InstAddressBus]         inst_addr_out           , // 指令地址
         // regs
-    output reg                          reg_we_out,             // 写通用寄存器标志
-    output reg[`RegistersAddressBus]    reg_write_addr_out,     // 写通用寄存器地址
-    output reg[`RegistersByteBus]       reg1_data_out,          // 通用寄存器1数据
-    output reg[`RegistersByteBus]       reg2_data_out,          // 通用寄存器2数据
+    output reg                          reg_we_out              , // 写通用寄存器标志
+    output reg[`RegistersAddressBus]    reg_write_addr_out      , // 写通用寄存器地址
+    output reg[`RegistersByteBus]       reg1_data_out           , // 通用寄存器1数据
+    output reg[`RegistersByteBus]       reg2_data_out           , // 通用寄存器2数据
         // data
-    output reg                          eval_en,                // 计算使能
-    output reg[`MemByteBus]             opnum1_out,             // 操作数1
-    output reg[`MemByteBus]             opnum2_out,             // 操作数2
-    output reg[`ALUFuncBus]             func_out,               // ALU功能
+    output reg                          eval_en                 , // 计算使能
+    output reg[`MemByteBus]             opnum1_out              , // 操作数1
+    output reg[`MemByteBus]             opnum2_out              , // 操作数2
+    output reg[`ALUFuncBus]             func_out                , // ALU功能
         // decoded signals
-    output reg[`INST_OPCODEBus]         opcode_out,             // 指令操作码
-    output reg[`INST_FUNC3Bus]          func3_out,              // func3
-    output reg[`INST_FUNC7Bus]          func7_out,              // func7
-    output reg[`INST_REGBus]            rs1_out,                // rs1
-    output reg[`INST_REGBus]            rs2_out,                // rs2
-    output reg[`INST_REGBus]            rd_out,                 // rd
-    output reg[`INST_IMMBus]            immI_out,               // 指令立即数I型
-    output reg[`INST_IMMBus]            immS_out,               // 指令立即数S型
-    output reg[`INST_IMMBus]            immB_out,               // 指令立即数B型
-    output reg[`INST_IMMBus]            immU_out,               // 指令立即数U型
-    output reg[`INST_IMMBus]            immJ_out,               // 指令立即数J型
-    output reg[`INST_SHAMTBus]          shamt_out               // 指令移位数
+    output reg[`INST_OPCODEBus]         opcode_out              , // 指令操作码
+    output reg[`INST_FUNC3Bus]          func3_out               , // func3
+    output reg[`INST_FUNC7Bus]          func7_out               , // func7
+    output reg[`INST_REGBus]            rs1_out                 , // rs1
+    output reg[`INST_REGBus]            rs2_out                 , // rs2
+    output reg[`INST_REGBus]            rd_out                  , // rd
+    output reg[`INST_IMMBus]            immI_out                , // 指令立即数I型
+    output reg[`INST_IMMBus]            immS_out                , // 指令立即数S型
+    output reg[`INST_IMMBus]            immB_out                , // 指令立即数B型
+    output reg[`INST_IMMBus]            immU_out                , // 指令立即数U型
+    output reg[`INST_IMMBus]            immJ_out                , // 指令立即数J型
+    output reg[`INST_SHAMTBus]          shamt_out                 // 指令移位数
 );
 
 // 解码后的信号
