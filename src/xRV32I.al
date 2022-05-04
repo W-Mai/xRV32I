@@ -14,7 +14,7 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="1"/>
+                    <Attr Name="CompileOrder" Val="2"/>
                 </FileInfo>
             </File>
             <File Path="core/defines.v">
@@ -22,7 +22,79 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="2"/>
+                    <Attr Name="CompileOrder" Val="3"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_id.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="4"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_alu.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="5"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_ex.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="6"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_id_ex.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="7"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_if.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="8"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_if_id.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="9"/>
+                </FileInfo>
+            </File>
+            <File Path="core/core_regs.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="10"/>
+                </FileInfo>
+            </File>
+            <File Path="core/xrv32i.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="11"/>
+                </FileInfo>
+            </File>
+            <File Path="utils/gen_ff.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="1"/>
                 </FileInfo>
             </File>
         </Verilog>
@@ -34,8 +106,8 @@
         </FileSet>
     </FileSets>
     <TOP_MODULE>
-        <LABEL>EG_PHY_SDRAM/rom</LABEL>
-        <MODULE>rom</MODULE>
+        <LABEL></LABEL>
+        <MODULE>xrv32i</MODULE>
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Property>
