@@ -104,8 +104,8 @@ always @(*) begin
                     write_reg1_addr_out = rs1;
                     write_reg2_addr_out = rs2;
                     
-                    opnum1_out = rs1;
-                    opnum2_out = rs2;
+                    opnum1_out = read_reg1_data_in;
+                    opnum2_out = read_reg2_data_in;
                 end
                 default : begin
                     reg_we_out          = `WriteDisable;
@@ -155,7 +155,7 @@ always @(*) begin
             eval_en  = `ALUEnable;
             case (func3)
                 `INST_FUNC3_ADD, `INST_FUNC3_ADDI, `INST_FUNC3_SUB : begin
-                    func_out = func7 == `INST_FUNC7_ADD ? `ALUFunc_ADD : `ALUFunc_SUB;
+                    func_out = (opcode == `INST_TYPE_I || func7 == `INST_FUNC7_ADD) ? `ALUFunc_ADD : `ALUFunc_SUB;
                 end
 
 
