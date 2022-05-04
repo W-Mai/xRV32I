@@ -18,7 +18,7 @@ wire[`MemAddressBus]  inst_addr		;
 
 reg[`InstByteBus]	  insts[0:3]     ;
 
-assign inst = insts[inst_addr];
+assign inst = insts[inst_addr>>2];
 
 xrv32i xrv32i_inst(
     .clk(clk),
@@ -35,37 +35,22 @@ assign r28 = xrv32i_inst.regs_inst.regs[28];
 assign r29 = xrv32i_inst.regs_inst.regs[29];
 
 	always begin
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
-		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27:%d r28:%d r29:%d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		clk = 1'b0; #10; clk = 1'b1; #10 $display("r27: %d r28: %d r29: %d", r27, r28, r29);
 
 
 		$finish;
 	end
 
 	initial begin
-        rst = `RstEnable; #10;
-        rst = `RstDisable; #10;
+        rst = `RstEnable; #10; clk = 1'b0; #10; clk = 1'b1; #10;
+        rst = `RstDisable;
 
 		$dumpfile("wave.vcd"); // 指定用作dumpfile的文件
 		$dumpvars; // dump all vars
