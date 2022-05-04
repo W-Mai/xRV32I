@@ -23,7 +23,7 @@ module core_regs(
     output reg[`RegistersByteBus]       read_data2_out    // 读寄存器2数据
 );
 
-reg[`RegistersByteBus] regs[0:`RegisterAddressBusWidth-1];
+reg[`RegistersByteBus] regs[0:(`RegistersNum-1)];
 
 // 写寄存器
 always @(posedge clk) begin
