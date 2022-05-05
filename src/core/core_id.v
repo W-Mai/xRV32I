@@ -164,7 +164,7 @@ always @(*) begin
                 end
                 `INST_FUNC3_SRL, `INST_FUNC3_SRLI,
                 `INST_FUNC3_SRA, `INST_FUNC3_SRAI   : begin
-                    func_out = func7 == `INST_FUNC7_SLL ? `ALUFunc_SLL : `ALUFunc_SRA;
+                    func_out = func7 == `INST_FUNC7_SLL ? `ALUFunc_SRL : `ALUFunc_SRA;
                 end
                 `INST_FUNC3_SLT, `INST_FUNC3_SLTI   : begin
                     func_out = `ALUFunc_SLT;
