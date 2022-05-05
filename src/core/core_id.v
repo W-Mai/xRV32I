@@ -103,7 +103,10 @@ always @(*) begin
     case(opcode)
         `INST_TYPE_R      : begin
             case (func3)
-                `INST_FUNC3_ADD  : begin
+                `INST_FUNC3_ADD, `INST_FUNC3_SUB, 
+                `INST_FUNC3_XOR, `INST_FUNC3_OR, `INST_FUNC3_AND, 
+                `INST_FUNC3_SLL, `INST_FUNC3_SRA, 
+                `INST_FUNC3_SLT, `INST_FUNC3_SLTU       : begin
                     reg_we_out          = `WriteEnable;
                     reg_write_addr_out  = rd;
                     write_reg1_addr_out = rs1;
@@ -117,7 +120,10 @@ always @(*) begin
 
         `INST_TYPE_I      : begin
             case (func3)
-                `INST_FUNC3_ADDI  : begin
+                `INST_FUNC3_ADDI, 
+                `INST_FUNC3_XORI, `INST_FUNC3_ORI, `INST_FUNC3_ANDI, 
+                `INST_FUNC3_SLLI, `INST_FUNC3_SRAI, 
+                `INST_FUNC3_SLTI, `INST_FUNC3_SLTIU     : begin
                     reg_we_out          = `WriteEnable;
                     reg_write_addr_out  = rd;
                     write_reg1_addr_out = rs1;
@@ -134,23 +140,42 @@ end
 
 // 输出ALU控制信号
 always @(*) begin
+    func_out = `ALUFunc_ADD;
+
     case (opcode)
         `INST_TYPE_R, `INST_TYPE_I      : begin
             eval_en  = `ALUEnable;
             case (func3)
-                `INST_FUNC3_ADD, `INST_FUNC3_ADDI, `INST_FUNC3_SUB : begin
+                `INST_FUNC3_ADD, `INST_FUNC3_ADDI, 
+                `INST_FUNC3_SUB                     : begin
                     func_out = (opcode == `INST_TYPE_I || func7 == `INST_FUNC7_ADD) ? `ALUFunc_ADD : `ALUFunc_SUB;
                 end
-
-
-                default : begin
-                    func_out = `ALUFunc_ADD;
+                `INST_FUNC3_XOR, `INST_FUNC3_XORI   : begin
+                    func_out = `ALUFunc_XOR;
+                end
+                `INST_FUNC3_OR, `INST_FUNC3_ORI     : begin
+                    func_out = `ALUFunc_OR;
+                end
+                `INST_FUNC3_AND, `INST_FUNC3_ANDI   : begin
+                    func_out = `ALUFunc_AND;
+                end
+                `INST_FUNC3_SLL, `INST_FUNC3_SLLI   : begin
+                    func_out = `ALUFunc_SLL;
+                end
+                `INST_FUNC3_SRL, `INST_FUNC3_SRLI,
+                `INST_FUNC3_SRA, `INST_FUNC3_SRAI   : begin
+                    func_out = func7 == `INST_FUNC7_SLL ? `ALUFunc_SLL : `ALUFunc_SRA;
+                end
+                `INST_FUNC3_SLT, `INST_FUNC3_SLTI   : begin
+                    func_out = `ALUFunc_SLT;
+                end
+                `INST_FUNC3_SLTU, `INST_FUNC3_SLTIU : begin
+                    func_out = `ALUFunc_SLTU;
                 end
             endcase
         end
         default : begin
             eval_en  = `ALUDisable;
-            func_out = `ALUFunc_ADD;
         end
     endcase
 end
