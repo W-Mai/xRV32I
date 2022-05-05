@@ -94,6 +94,11 @@ always @(*) begin
     immJ_out            = immJ;
     shamt_out           = shamt;
 
+
+    reg_we_out          = `WriteDisable;
+    reg_write_addr_out  = `ZeroReg;
+    write_reg1_addr_out = `ZeroReg;
+    write_reg2_addr_out = `ZeroReg;
     // 判断指令操作码
     case(opcode)
         `INST_TYPE_R      : begin
@@ -107,13 +112,6 @@ always @(*) begin
                     opnum1_out = read_reg1_data_in;
                     opnum2_out = read_reg2_data_in;
                 end
-                default : begin
-                    reg_we_out          = `WriteDisable;
-                    reg_write_addr_out  = `ZeroReg;
-                    write_reg1_addr_out = `ZeroReg;
-                    write_reg2_addr_out = `ZeroReg;
-                end
-
             endcase
         end
 
@@ -128,21 +126,7 @@ always @(*) begin
                     opnum1_out = rs1;
                     opnum2_out = immI;
                 end
-                default : begin
-                    reg_we_out          = `WriteDisable;
-                    reg_write_addr_out  = `ZeroReg;
-                    write_reg1_addr_out = `ZeroReg;
-                    write_reg2_addr_out = `ZeroReg;
-                end
-
             endcase
-        end
-
-        default : begin
-            reg_we_out          = `WriteDisable;
-            reg_write_addr_out  = `ZeroReg;
-            write_reg1_addr_out = `ZeroReg;
-            write_reg2_addr_out = `ZeroReg;
         end
     endcase
 end
