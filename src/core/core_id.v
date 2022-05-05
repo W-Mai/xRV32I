@@ -129,8 +129,8 @@ always @(*) begin
                     write_reg1_addr_out = rs1;
                     write_reg2_addr_out = `ZeroReg;
                     
-                    opnum1_out = rs1;
-                    opnum2_out = immI;
+                    opnum1_out = read_reg1_data_in;
+                    opnum2_out = (func3 == `INST_FUNC3_SLLI || func3 == `INST_FUNC3_SRLI || func3 == `INST_FUNC3_SRAI) ? immI[4:0] : immI;
                 end
             endcase
         end
