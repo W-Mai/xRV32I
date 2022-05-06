@@ -30,6 +30,7 @@
 `define ALUEnable       1'b1
 `define ALUDisable      1'b0
 `define ZeroWord        32'h0
+`define OneWord         32'h1
 `define ZeroReg         5'h0
 
 `define HoldFlagBus     2:0        // 暂停流水总线
@@ -119,5 +120,12 @@
 `define ALUFunc_SRA         5'b00111
 `define ALUFunc_SLT         5'b01000
 `define ALUFunc_SLTU        5'b01001
+`define ALUFunc_CMP         5'b01010
+`define ALUFunc_CMPU        5'b01011
+
+    // CMP比较结果
+`define CMP_EQ              5'b00000
+`define CMP_LT              5'b00001
+`define CMP_GT              5'b00010
 
 // ############################## ALU End #######################################
