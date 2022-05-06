@@ -9,16 +9,19 @@ module core_if_id(
 	input wire clk,
 	input wire rst,
 
-    input wire[`InstAddressBus]    inst_addr_in    , // 指令地址
-    input wire[`InstByteBus]       inst_in         , // 指令
+    // 从core_ctrl取得的信号
+    input wire                      hold_flag_in    , // 流水线暂停信号
+
+    input wire[`InstAddressBus]     inst_addr_in    , // 指令地址
+    input wire[`InstByteBus]        inst_in         , // 指令
 
     output wire[`InstAddressBus]    inst_addr_out   , // 指令地址
     output wire[`InstByteBus]       inst_out          // 指令
 );
 
-gen_ff #(32) inst_addr_ff	(clk, rst, `CPURstAddress, 	inst_addr_in, 	inst_addr_out);
+gen_ff #(32) inst_addr_ff	(clk, rst, hold_flag_in,  `CPURstAddress, 	inst_addr_in, 	inst_addr_out);
 
-gen_ff #(32) inst_ff		(clk, rst, `INST_NOP, 		inst_in,		inst_out);
+gen_ff #(32) inst_ff		(clk, rst, hold_flag_in,  `INST_NOP, 		inst_in,		inst_out);
 
 
 endmodule

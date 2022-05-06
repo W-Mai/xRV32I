@@ -30,16 +30,20 @@
 `define ALUEnable       1'b1
 `define ALUDisable      1'b0
 `define ZeroWord        32'h0
+`define OneWord         32'h1
 `define ZeroReg         5'h0
 
-`define HoldFlagBus     2:0        // 暂停流水总线
-`define HoldNone        3'b000     // 不暂停流水总线
-`define HoldPc          3'b001     // 暂停PC
-`define HoldIf          3'b010     // 暂停IF
-`define HoldId          3'b011     // 暂停ID
+`define HoldFlagBus     2:0         // 暂停流水总线
+`define HoldNone        3'b000      // 不暂停流水总线
+`define HoldPc          3'b001      // 暂停PC
+`define HoldIf          3'b010      // 暂停IF
+`define HoldId          3'b011      // 暂停ID
 
-`define JumpEnable  1'b1
-`define JumpDisable 1'b0
+`define HoldEnable      1'b1        // 暂停使能
+`define HoldDisable     1'b0        // 暂停禁止
+
+`define JumpEnable      1'b1        // 跳转使能
+`define JumpDisable     1'b0        // 跳转禁止
 
 `define INST_OPCODEWidth    7
 `define INST_REGBusWidth    `RegisterAddressBusWidth
@@ -106,6 +110,49 @@
 `define INST_FUNC3_SLTI     3'b010
 `define INST_FUNC3_SLTIU    3'b011
 
+// I-L-type 指令
+`define INST_FUNC3_LB       3'b000
+`define INST_FUNC3_LH       3'b001
+`define INST_FUNC3_LW       3'b010
+`define INST_FUNC3_LBU      3'b100
+`define INST_FUNC3_LHU      3'b101
+
+// I-J-type 指令
+`define INST_FUNC3_JALR     3'b000
+
+// I-E-type 指令
+`define INST_FUNC3_ECALL    3'b000  // imm = 0
+`define INST_FUNC3_EBREAK   3'b000  // imm = 1
+
+// I-F-type 指令
+`define INST_FUNC3_FENCE    3'b000
+`define INST_FUNC3_FENCE_I  3'b001
+
+// I-C-type 指令
+`define INST_FUNC3_CSRRW    3'b001
+`define INST_FUNC3_CSRRS    3'b010
+`define INST_FUNC3_CSRRC    3'b011
+`define INST_FUNC3_CSRRWI   3'b101
+`define INST_FUNC3_CSRRSI   3'b110
+`define INST_FUNC3_CSRRCI   3'b111
+
+// S-type 指令
+`define INST_FUNC3_SB       3'b000
+`define INST_FUNC3_SH       3'b001
+`define INST_FUNC3_SW       3'b010
+
+// B-type 指令
+`define INST_FUNC3_BEQ      3'b000
+`define INST_FUNC3_BNE      3'b001
+`define INST_FUNC3_BLT      3'b100
+`define INST_FUNC3_BGE      3'b101
+`define INST_FUNC3_BLTU     3'b110
+`define INST_FUNC3_BGEU     3'b111
+
+// U-type 指令 (没有func3以及其他标识)
+
+// J-type 指令 (没有func3以及其他标识)
+
 
 // ############################## ALU Begin #####################################
 
@@ -119,5 +166,12 @@
 `define ALUFunc_SRA         5'b00111
 `define ALUFunc_SLT         5'b01000
 `define ALUFunc_SLTU        5'b01001
+`define ALUFunc_CMP         5'b01010
+`define ALUFunc_CMPU        5'b01011
+
+    // CMP比较结果
+`define CMP_EQ              5'b00000
+`define CMP_LT              5'b00001
+`define CMP_GT              5'b00010
 
 // ############################## ALU End #######################################

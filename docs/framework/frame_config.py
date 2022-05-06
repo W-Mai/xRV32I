@@ -9,9 +9,9 @@ class Core_PC_REG(ModelBoxBaseModel):
     CLK = Wire('CLK')
     RST = Wire('RST')
 
-    Jump_Flag_In = Wire('Jump_Flag_In')
-    Jump_Addr_In = Wire('Jump_Addr_In', (0, 31))
-    Hold_Flag_In = Wire('Hold_Flag_In', (0, 2))
+    Jump_Flag_In = Wire('Jump_Flag(CTRL, PC_REG)')
+    Jump_Addr_In = Wire('Jump_Addr(CTRL, PC_REG)', (0, 31))
+    Hold_Flag_In = Wire('Hold_Flag(CTRL, PC_REG)', (0, 2))
 
     PC_Out = Reg('PC(PC_REG, IF)', (0, 31))
 
@@ -35,6 +35,8 @@ class Core_IF(ModelBoxBaseModel):
 class Core_IF_ID(ModelBoxBaseModel):
     CLK = Wire('CLK')
     RST = Wire('RST')
+
+    Hold_Flag_In = Wire('Hold_Flag(CTRL, IF_ID)')
 
     Inst_Addr_In = Wire('Inst_Addr(IF, IF_ID)', (0, 31))
     Inst_In = Wire('Int(IF, IF_ID)', (0, 31))
@@ -109,6 +111,8 @@ class Core_ID(ModelBoxBaseModel):
 class Core_ID_EX(ModelBoxBaseModel):
     CLK = Wire('CLK')
     RST = Wire('RST')
+
+    Hold_Flag_In = Wire('Hold_Flag(CTRL, ID_EX)')
 
     Inst_In = Wire('Inst(ID, ID_EX)', (0, 31))
     Inst_Addr_In = Wire('Inst_Addr(ID, ID_EX)', (0, 31))
@@ -215,8 +219,25 @@ class Core_EX(ModelBoxBaseModel):
     Reg_Write_Addr_Out = Wire('Reg_Write_Addr_Out', (0, 31))
     Reg_Write_Data_Out = Wire('Reg_Write_Data_Out', (0, 31))
 
+    Jump_Flag_Out = Wire('Jump_Flag(EX, CTRL)')
+    Jump_Addr_Out = Wire('Jump_Addr(EX, CTRL)', (0, 31))
+    Hold_Flag_Out = Wire('Hold_Flag_Ex(EX, CTRL)')
+
     class Meta:
         name = 'Core/EX'
+
+
+class Core_CTRL(ModelBoxBaseModel):
+    Jump_Flag_In = Wire('Jump_Flag(EX, CTRL)')
+    Jump_Addr_In = Wire('Jump_Addr(EX, CTRL)', (0, 31))
+    Hold_Flag_Ex_In = Wire('Hold_Flag_Ex(EX, CTRL)')
+
+    Jump_Flag_Out = Wire('Jump_Flag(CTRL, PC_REG)')
+    Jump_Addr_Out = Wire('Jump_Addr(CTRL, PC_REG)', (0, 31))
+    Hold_Flag_Out = Wire('Hold_Flag(CTRL, PC_REG, IF_ID, ID_EX)')
+
+    class Meta:
+        name = 'Core/CTRL'
 
 
 class xRV32I(ModelBoxBaseModel):
@@ -234,18 +255,22 @@ CONFIG = CONFIGURE(
     node_pos_pair={
         Core_PC_REG: (-6, 0),
         Core_IF: (2, -3),
-        Core_IF_ID: (12, 8.6),
+        Core_IF_ID: (12, 9.2),
         Core_REGS: (2, 8),
         Core_ID: (20, 6.8),
         Core_ID_EX: (34, 12),
         Core_ALU: (40.5, 7.8),
         Core_EX: (52, 12),
+        Core_CTRL: (59, 20),
 
         xRV32I: (-16, 5),
     }, connector_pair={
         Connector(Core_EX.Reg_We_Out, Core_REGS.Write_En_In, (56, 14), (-1, 14)),
         Connector(Core_EX.Reg_Write_Addr_Out, Core_REGS.Write_Addr_In, (56, 14.25), (-1, 14.25)),
         Connector(Core_EX.Reg_Write_Data_Out, Core_REGS.Write_Data_In, (56, 14.5), (-1, 14.5)),
+        Connector(Core_CTRL.Hold_Flag_Out, Core_IF_ID.Hold_Flag_In, (9, 16.7)),
+        Connector(Core_CTRL.Hold_Flag_Out, Core_PC_REG.Hold_Flag_In, (6, 16.7)),
+        Connector(Core_CTRL.Hold_Flag_Out, Core_ID_EX.Hold_Flag_In, (12, 16.7)),
     }, other_conf={}
     , colors=[color_hex(*hsl_to_rgb(h, 0.5, 0.5)) for h in [0 + i * 1 / 32 for i in range(32)]]
 )

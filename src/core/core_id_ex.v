@@ -9,6 +9,9 @@ module core_id_ex(
     input clk,
     input rst,
 
+    // 从core_ctrl取得的信号
+    input wire                         hold_flag_in           , // 流水线暂停信号
+
     // 从core_id接收的信号
         // inst
     input wire[`InstByteBus]           inst_in                , // 指令内容
@@ -67,31 +70,31 @@ module core_id_ex(
     output wire[`INST_SHAMTBus]        shamt_out                // 指令移位数
 );
 
-gen_ff #(`InstByteWidth)        inst_ff_inst(clk, rst,      `INST_NOP,      inst_in,            inst_out            );
-gen_ff #(`InstAddressBusWidth)  inst_ff_addr(clk, rst,      `CPURstAddress, inst_addr_in,       inst_addr_out       );
-gen_ff #(1)                     reg_we_ff(clk, rst,         `WriteDisable,  reg_we_in,          reg_we_out          );
-gen_ff #(`RegistersNumWidth)    reg_write_addr_ff(clk, rst, `ZeroReg,       reg_write_addr_in,  reg_write_addr_out  );
-gen_ff #(`RegistersByteWidth)   reg1_data_ff(clk, rst,      `ZeroWord,      reg1_data_in,       reg1_data_out       );
-gen_ff #(`RegistersByteWidth)   reg2_data_ff(clk, rst,      `ZeroWord,      reg2_data_in,       reg2_data_out       );
+gen_ff #(`InstByteWidth)        inst_ff_inst(clk, rst, hold_flag_in,       `INST_NOP,      inst_in,            inst_out            );
+gen_ff #(`InstAddressBusWidth)  inst_ff_addr(clk, rst, hold_flag_in,       `CPURstAddress, inst_addr_in,       inst_addr_out       );
+gen_ff #(1)                     reg_we_ff(clk, rst, hold_flag_in,          `WriteDisable,  reg_we_in,          reg_we_out          );
+gen_ff #(`RegistersNumWidth)    reg_write_addr_ff(clk, rst, hold_flag_in,  `ZeroReg,       reg_write_addr_in,  reg_write_addr_out  );
+gen_ff #(`RegistersByteWidth)   reg1_data_ff(clk, rst, hold_flag_in,       `ZeroWord,      reg1_data_in,       reg1_data_out       );
+gen_ff #(`RegistersByteWidth)   reg2_data_ff(clk, rst, hold_flag_in,       `ZeroWord,      reg2_data_in,       reg2_data_out       );
 
 // ALU相关，重置之后不计算，并且默认按照ADD指令输出即NOP
-gen_ff #(1)                     eval_en_ff(clk, rst,        `ALUDisable,    eval_en_in,         eval_en_out         );
-gen_ff #(`MemByteWidth)         opnum1_ff(clk, rst,         `ZeroWord,      opnum1_in,          opnum1_out          );
-gen_ff #(`MemByteWidth)         opnum2_ff(clk, rst,         `ZeroWord,      opnum2_in,          opnum2_out          );
-gen_ff #(`ALUFuncBusWidth)      func_ff(clk, rst,           `ALUFunc_ADD,   func_in,            func_out            );
+gen_ff #(1)                     eval_en_ff(clk, rst, hold_flag_in,         `ALUDisable,    eval_en_in,         eval_en_out         );
+gen_ff #(`MemByteWidth)         opnum1_ff(clk, rst, hold_flag_in,          `ZeroWord,      opnum1_in,          opnum1_out          );
+gen_ff #(`MemByteWidth)         opnum2_ff(clk, rst, hold_flag_in,          `ZeroWord,      opnum2_in,          opnum2_out          );
+gen_ff #(`ALUFuncBusWidth)      func_ff(clk, rst, hold_flag_in,            `ALUFunc_ADD,   func_in,            func_out            );
 
 // 重置后为NOP指令，以下输出NOP指令相关即可
-gen_ff #(`INST_OPCODEWidth)     opcode_ff(clk, rst,     `INST_TYPE_I,           opcode_in,      opcode_out          );
-gen_ff #(`INST_FUNC3Width)      func3_ff(clk, rst,      `INST_FUNC3_ADDI,       func3_in,       func3_out           );
-gen_ff #(`INST_FUNC7Width)      func7_ff(clk, rst,      `INST_FUNC7Width'b0,    func7_in,       func7_out           );
-gen_ff #(`INST_REGBusWidth)     rs1_ff(clk, rst,        `ZeroReg,               rs1_in,         rs1_out             );
-gen_ff #(`INST_REGBusWidth)     rs2_ff(clk, rst,        `ZeroReg,               rs2_in,         rs2_out             );
-gen_ff #(`INST_REGBusWidth)     rd_ff(clk, rst,         `ZeroReg,               rd_in,          rd_out              );
-gen_ff #(`INST_IMMBusWidth)     immI_ff(clk, rst,       `ZeroWord,              immI_in,        immI_out            );
-gen_ff #(`INST_IMMBusWidth)     immS_ff(clk, rst,       `ZeroWord,              immS_in,        immS_out            );
-gen_ff #(`INST_IMMBusWidth)     immB_ff(clk, rst,       `ZeroWord,              immB_in,        immB_out            );
-gen_ff #(`INST_IMMBusWidth)     immU_ff(clk, rst,       `ZeroWord,              immU_in,        immU_out            );
-gen_ff #(`INST_IMMBusWidth)     immJ_ff(clk, rst,       `ZeroWord,              immJ_in,        immJ_out            );
-gen_ff #(`INST_SHAMTWidth)      shamt_ff(clk, rst,      `INST_SHAMTWidth'b0,    shamt_in,       shamt_out           );
+gen_ff #(`INST_OPCODEWidth)     opcode_ff(clk, rst, hold_flag_in,      `INST_TYPE_I,           opcode_in,      opcode_out          );
+gen_ff #(`INST_FUNC3Width)      func3_ff(clk, rst, hold_flag_in,       `INST_FUNC3_ADDI,       func3_in,       func3_out           );
+gen_ff #(`INST_FUNC7Width)      func7_ff(clk, rst, hold_flag_in,       `INST_FUNC7Width'b0,    func7_in,       func7_out           );
+gen_ff #(`INST_REGBusWidth)     rs1_ff(clk, rst, hold_flag_in,         `ZeroReg,               rs1_in,         rs1_out             );
+gen_ff #(`INST_REGBusWidth)     rs2_ff(clk, rst, hold_flag_in,         `ZeroReg,               rs2_in,         rs2_out             );
+gen_ff #(`INST_REGBusWidth)     rd_ff(clk, rst, hold_flag_in,          `ZeroReg,               rd_in,          rd_out              );
+gen_ff #(`INST_IMMBusWidth)     immI_ff(clk, rst, hold_flag_in,        `ZeroWord,              immI_in,        immI_out            );
+gen_ff #(`INST_IMMBusWidth)     immS_ff(clk, rst, hold_flag_in,        `ZeroWord,              immS_in,        immS_out            );
+gen_ff #(`INST_IMMBusWidth)     immB_ff(clk, rst, hold_flag_in,        `ZeroWord,              immB_in,        immB_out            );
+gen_ff #(`INST_IMMBusWidth)     immU_ff(clk, rst, hold_flag_in,        `ZeroWord,              immU_in,        immU_out            );
+gen_ff #(`INST_IMMBusWidth)     immJ_ff(clk, rst, hold_flag_in,        `ZeroWord,              immJ_in,        immJ_out            );
+gen_ff #(`INST_SHAMTWidth)      shamt_ff(clk, rst, hold_flag_in,       `INST_SHAMTWidth'b0,    shamt_in,       shamt_out           );
 
 endmodule
