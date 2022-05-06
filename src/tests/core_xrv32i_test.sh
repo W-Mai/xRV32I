@@ -13,6 +13,7 @@ iverilog -o core_xrv32i_test.vvp \
                                 ../core/core_id_ex.v \
                                 ../core/core_alu.v \
                                 ../core/core_ex.v \
+                                ../core/core_ctrl.v \
                                 core_xrv32i_test.v
 
 vvp core_xrv32i_test.vvp
