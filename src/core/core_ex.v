@@ -86,6 +86,17 @@ always @(*) begin
     jump_addr   = `CPURstAddress;
 
     case (opcode_in) 
+        `INST_TYPE_IJ : begin
+            case (func3_in)
+                `INST_FUNC3_JALR : begin
+                    jump_flag      = `JumpEnable;
+                    jump_addr      = reg1_data_in + immI_in;
+
+                    reg_write_data = eval_val_in;
+                end
+            endcase
+        end
+
         `INST_TYPE_B : begin
             if (`ZeroWord   
                 || (func3_in == `INST_FUNC3_BEQ && eval_val_in == `CMP_EQ)
@@ -101,8 +112,8 @@ always @(*) begin
         end
 
         `INST_TYPE_J : begin
-            jump_flag = `JumpEnable;
-            jump_addr = inst_addr_in + immJ_in;
+            jump_flag      = `JumpEnable;
+            jump_addr      = inst_addr_in + immJ_in;
 
             reg_write_data = eval_val_in;
         end
