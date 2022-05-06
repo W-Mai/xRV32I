@@ -193,10 +193,10 @@ always @(*) begin
             eval_en  = `ALUEnable;
             case (func3)
                 `INST_FUNC3_BEQ, `INST_FUNC3_BNE, `INST_FUNC3_BLT, `INST_FUNC3_BGE   : begin
-                    func_out = `ALUFunc_SLT;
+                    func_out = `ALUFunc_CMP;
                 end
                 `INST_FUNC3_BLTU, `INST_FUNC3_BGEU  : begin
-                    func_out = `ALUFunc_SLTU;
+                    func_out = `ALUFunc_CMPU;
                 end
             endcase
         end

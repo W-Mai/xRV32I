@@ -36,19 +36,31 @@ module core_ex(
     input wire[`INST_IMMBus]            immU_in                , // 指令立即数U型
     input wire[`INST_IMMBus]            immJ_in                , // 指令立即数J型
     input wire[`INST_SHAMTBus]          shamt_in               , // 指令移位数,
+    
     // 向core_regs发送的信号
     output wire                         reg_we_out             , // 是否要写通用寄存器
     output wire[`RegistersAddressBus]   reg_write_addr_out     , // 写通用寄存器地址
-    output wire[`RegistersByteBus]      reg_write_data_out       // 写寄存器数据
+    output wire[`RegistersByteBus]      reg_write_data_out     , // 写寄存器数据
+    // 向core_ctrl发送的信号
+    output wire                         hold_flag_out          , // 是否要暂停
+    output wire                         jump_flag_out          , // 是否要跳转
+    output wire[`MemByteBus]            jump_addr_out            // 跳转地址
+
 );
 
 reg                         reg_we;
 reg[`RegistersAddressBus]   reg_write_addr;
 reg[`RegistersByteBus]      reg_write_data;
+reg                         hold_flag;
+reg                         jump_flag;
+reg[`MemByteBus]            jump_addr;
 
 assign reg_we_out           = reg_we;
 assign reg_write_addr_out   = reg_write_addr;
 assign reg_write_data_out   = reg_write_data;
+assign hold_flag_out        = hold_flag;
+assign jump_flag_out        = jump_flag;
+assign jump_addr_out        = jump_addr;
 
 always @(*) begin
     reg_we          = reg_we_in;
@@ -67,6 +79,54 @@ always @(*) begin
     end else begin
         reg_write_data = `ZeroWord;
     end
+
+    // core_ctrl默认值
+    hold_flag   = `HoldNone;
+    jump_flag   = `JumpDisable;
+    jump_addr   = `CPURstAddress;
+
+    case (opcode_in) 
+        `INST_TYPE_B : begin
+            case (func3_in)
+                `INST_FUNC3_BEQ : begin
+                    if (eval_val_in == `CMP_EQ) begin
+                        jump_flag = `JumpEnable;
+                        jump_addr = immB_in;
+                    end
+                end
+                `INST_FUNC3_BNE : begin
+                    if (eval_val_in != `CMP_EQ) begin
+                        jump_flag = `JumpEnable;
+                        jump_addr = immB_in;
+                    end
+                end
+                `INST_FUNC3_BLT : begin
+                    if (eval_val_in == `CMP_LT) begin
+                        jump_flag = `JumpEnable;
+                        jump_addr = immB_in;
+                    end
+                end
+                `INST_FUNC3_BGE : begin
+                    if (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ) begin
+                        jump_flag = `JumpEnable;
+                        jump_addr = immB_in;
+                    end
+                end
+                `INST_FUNC3_BLTU : begin
+                    if (eval_val_in == `CMP_LT) begin
+                        jump_flag = `JumpEnable;
+                        jump_addr = immB_in;
+                    end
+                end
+                `INST_FUNC3_BGEU : begin
+                    if (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ) begin
+                        jump_flag = `JumpEnable;
+                        jump_addr = immB_in;
+                    end
+                end
+            endcase
+        end
+    endcase
 end
 
 endmodule
