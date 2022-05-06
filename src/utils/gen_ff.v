@@ -10,6 +10,7 @@ module gen_ff #(
 )(
 	input wire clk,
 	input wire rst,
+    input wire hold,
 
     input wire [ff_width-1:0] default_val_in    ,
     input wire [ff_width-1:0] val_in            ,
@@ -20,7 +21,7 @@ module gen_ff #(
 
 always @(posedge clk) begin
 	// 复位
-	if (rst == `RstEnable) begin
+	if (rst == `RstEnable || hold == `HoldEnable) begin
 		val_out <= default_val_in;
 	end else begin
         val_out <= val_in;
