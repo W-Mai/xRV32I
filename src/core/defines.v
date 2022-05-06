@@ -163,5 +163,12 @@
 `define ALUFunc_SRA         5'b00111
 `define ALUFunc_SLT         5'b01000
 `define ALUFunc_SLTU        5'b01001
+`define ALUFunc_CMP         5'b01010
+`define ALUFunc_CMPU        5'b01011
+
+    // CMP比较结果
+`define CMP_EQ              5'b00000
+`define CMP_LT              5'b00001
+`define CMP_GT              5'b00010
 
 // ############################## ALU End #######################################
