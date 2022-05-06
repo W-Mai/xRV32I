@@ -147,6 +147,15 @@ always @(*) begin
                 end
             endcase
         end
+
+        `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
+            reg_we_out          = `WriteEnable;
+            reg_write_addr_out  = rd;
+
+            opnum1_out = inst_addr_in;
+            opnum2_out = `InstByteWidth / 8;
+        end
+
     endcase
 end
 
@@ -199,6 +208,11 @@ always @(*) begin
                     func_out = `ALUFunc_CMPU;
                 end
             endcase
+        end
+
+        `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
+            eval_en  = `ALUEnable;
+            func_out = `ALUFunc_ADD;
         end
     endcase
 end

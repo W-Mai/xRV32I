@@ -99,6 +99,13 @@ always @(*) begin
                 jump_addr = inst_addr_in + immB_in;
             end
         end
+
+        `INST_TYPE_J : begin
+            jump_flag = `JumpEnable;
+            jump_addr = inst_addr_in + immJ_in;
+
+            reg_write_data = eval_val_in;
+        end
     endcase
 end
 
