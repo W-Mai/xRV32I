@@ -106,6 +106,49 @@
 `define INST_FUNC3_SLTI     3'b010
 `define INST_FUNC3_SLTIU    3'b011
 
+// I-L-type 指令
+`define INST_FUNC3_LB       3'b000
+`define INST_FUNC3_LH       3'b001
+`define INST_FUNC3_LW       3'b010
+`define INST_FUNC3_LBU      3'b100
+`define INST_FUNC3_LHU      3'b101
+
+// I-J-type 指令
+`define INST_FUNC3_JALR     3'b000
+
+// I-E-type 指令
+`define INST_FUNC3_ECALL    3'b000  // imm = 0
+`define INST_FUNC3_EBREAK   3'b000  // imm = 1
+
+// I-F-type 指令
+`define INST_FUNC3_FENCE    3'b000
+`define INST_FUNC3_FENCE_I  3'b001
+
+// I-C-type 指令
+`define INST_FUNC3_CSRRW    3'b001
+`define INST_FUNC3_CSRRS    3'b010
+`define INST_FUNC3_CSRRC    3'b011
+`define INST_FUNC3_CSRRWI   3'b101
+`define INST_FUNC3_CSRRSI   3'b110
+`define INST_FUNC3_CSRRCI   3'b111
+
+// S-type 指令
+`define INST_FUNC3_SB       3'b000
+`define INST_FUNC3_SH       3'b001
+`define INST_FUNC3_SW       3'b010
+
+// B-type 指令
+`define INST_FUNC3_BEQ      3'b000
+`define INST_FUNC3_BNE      3'b001
+`define INST_FUNC3_BLT      3'b100
+`define INST_FUNC3_BGE      3'b101
+`define INST_FUNC3_BLTU     3'b110
+`define INST_FUNC3_BGEU     3'b111
+
+// U-type 指令 (没有func3以及其他标识)
+
+// J-type 指令 (没有func3以及其他标识)
+
 
 // ############################## ALU Begin #####################################
 
