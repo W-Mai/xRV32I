@@ -134,6 +134,41 @@ always @(*) begin
                 end
             endcase
         end
+
+        `INST_TYPE_IJ     : begin
+            case (func3)
+                `INST_FUNC3_JALR   : begin
+                    reg_we_out          = `WriteEnable;
+                    reg_write_addr_out  = rd;
+                    write_reg1_addr_out = rs1;
+
+                    opnum1_out = inst_addr_in;
+                    opnum2_out = `InstByteWidth / 8;
+                end
+            endcase
+        end
+
+        `INST_TYPE_B      : begin
+            case (func3)
+                `INST_FUNC3_BEQ, `INST_FUNC3_BNE, `INST_FUNC3_BLT,
+                `INST_FUNC3_BGE, `INST_FUNC3_BLTU, `INST_FUNC3_BGEU   : begin
+                    write_reg1_addr_out = rs1;
+                    write_reg2_addr_out = rs2;
+
+                    opnum1_out = read_reg1_data_in;
+                    opnum2_out = read_reg2_data_in;
+                end
+            endcase
+        end
+
+        `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
+            reg_we_out          = `WriteEnable;
+            reg_write_addr_out  = rd;
+
+            opnum1_out = inst_addr_in;
+            opnum2_out = `InstByteWidth / 8;
+        end
+
     endcase
 end
 
@@ -141,6 +176,7 @@ end
 // 输出ALU控制信号
 always @(*) begin
     func_out = `ALUFunc_ADD;
+    eval_en  = `ALUDisable;
 
     case (opcode)
         `INST_TYPE_R, `INST_TYPE_I      : begin
@@ -174,8 +210,31 @@ always @(*) begin
                 end
             endcase
         end
-        default : begin
-            eval_en  = `ALUDisable;
+
+        `INST_TYPE_IJ     : begin
+            eval_en  = `ALUEnable;
+            case (func3)
+                `INST_FUNC3_JALR   : begin
+                    func_out = `ALUFunc_ADD;
+                end
+            endcase
+        end
+
+        `INST_TYPE_B      : begin
+            eval_en  = `ALUEnable;
+            case (func3)
+                `INST_FUNC3_BEQ, `INST_FUNC3_BNE, `INST_FUNC3_BLT, `INST_FUNC3_BGE   : begin
+                    func_out = `ALUFunc_CMP;
+                end
+                `INST_FUNC3_BLTU, `INST_FUNC3_BGEU  : begin
+                    func_out = `ALUFunc_CMPU;
+                end
+            endcase
+        end
+
+        `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
+            eval_en  = `ALUEnable;
+            func_out = `ALUFunc_ADD;
         end
     endcase
 end
