@@ -16,17 +16,22 @@ module xrv32i(
 
 wire[`InstAddressBus] pc_reg_pc_out;
 
+// 来自core_ctrl的输出信号
+wire                 ctrl_jump_flag_out     ;
+wire[`MemAddressBus] ctrl_jump_addr_out     ;
+wire                 ctrl_hold_flag_out     ;
+
 core_pc_reg pc_reg_inst(
 	.clk(clk),
 	.rst(rst),
 
-	.jump_flag_in 	(`JumpDisable  )        , // 跳转标志
-	.jump_addr_in 	(`CPURstAddress)        , // 跳转地址
+	.jump_flag_in 	(ctrl_jump_flag_out)    , // 跳转标志
+	.jump_addr_in 	(ctrl_jump_addr_out)    , // 跳转地址
 	
 	.pc_out 		(pc_reg_pc_out )        , // 当前程序计数器
 
 	// 其他杂项
-	.hold_flag_in	(`HoldNone     )          // 暂停标志
+	.hold_flag_in	(ctrl_hold_flag_out)      // 暂停标志
 );
 
 wire[`InstAddressBus]   if_inst_addr_out    ;
@@ -49,8 +54,11 @@ core_if_id if_id_inst(
 	.clk(clk),
 	.rst(rst),
 
-    .inst_addr_in    (if_inst_addr_out   )      , // 指令地址
-    .inst_in         (if_inst_out        )      , // 指令
+    // 从core_ctrl取得的信号
+    .hold_flag_in	 (ctrl_hold_flag_out)       , // 流水线暂停标志
+
+    .inst_addr_in    (if_inst_addr_out  )       , // 指令地址
+    .inst_in         (if_inst_out       )       , // 指令
 
     .inst_addr_out   (if_id_addr_out)           , // 指令地址
     .inst_out        (if_id_out     )             // 指令
@@ -186,6 +194,9 @@ core_id_ex id_ex(
     .clk(clk),
     .rst(rst),
 
+    // 从core_ctrl取得的信号
+    .hold_flag_in	        (ctrl_hold_flag_out)        , // 流水线暂停标志
+
     // 从core_id接收的信号
         // inst
     .inst_in                (id_inst_out     )          , // 指令内容
@@ -257,6 +268,11 @@ core_alu alu_inst(
     .res_out     (alu_res_out     )                       // 结果
 );
 
+// 向core_ctrl发送的信号
+wire                         ex_hold_flag_out           ;
+wire                         ex_jump_flag_out           ;
+wire[`MemByteBus]            ex_jump_addr_out           ;
+
 core_ex ex_inst(
     .rst(rst),
 
@@ -291,7 +307,21 @@ core_ex ex_inst(
     // 向core_regs发送的信号
     .reg_we_out             (ex_reg_we_out        )     , // 是否要写通用寄存器
     .reg_write_addr_out     (ex_reg_write_addr_out)     , // 写通用寄存器地址
-    .reg_write_data_out     (ex_reg_write_data_out)       // 写寄存器数据
+    .reg_write_data_out     (ex_reg_write_data_out)     , // 写寄存器数据
+    // 向core_ctrl发送的信号
+    .hold_flag_out          (ex_hold_flag_out)          , // 是否要暂停
+    .jump_flag_out          (ex_jump_flag_out)          , // 是否要跳转
+    .jump_addr_out          (ex_jump_addr_out)            // 跳转地址
+);
+
+core_ctrl ctrl_inst(
+    .jump_flag_in    (ex_jump_flag_out)                 , // 跳转标志
+    .jump_addr_in    (ex_jump_addr_out)                 , // 跳转地址
+    .hold_flag_ex_in (ex_hold_flag_out)                 , // core_ex暂停流水标志
+
+    .jump_flag_out   ()                                 , // 跳转标志
+    .jump_addr_out   ()                                 , // 跳转地址
+    .hold_flag_out   ()                                   // 暂停流水标志
 );
 
 endmodule

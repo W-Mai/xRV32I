@@ -10,7 +10,7 @@ module core_id_ex(
     input rst,
 
     // 从core_ctrl取得的信号
-    input wire hold_flag_in,
+    input wire                         hold_flag_in           , // 流水线暂停信号
 
     // 从core_id接收的信号
         // inst

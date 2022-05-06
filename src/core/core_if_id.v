@@ -10,7 +10,7 @@ module core_if_id(
 	input wire rst,
 
     // 从core_ctrl取得的信号
-    input wire hold_flag_in,
+    input wire                      hold_flag_in    , // 流水线暂停信号
 
     input wire[`InstAddressBus]     inst_addr_in    , // 指令地址
     input wire[`InstByteBus]        inst_in         , // 指令
