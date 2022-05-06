@@ -30,6 +30,7 @@
 `define ALUEnable       1'b1
 `define ALUDisable      1'b0
 `define ZeroWord        32'h0
+`define OneWord         32'h1
 `define ZeroReg         5'h0
 
 `define HoldFlagBus     2:0        // 暂停流水总线
