@@ -87,44 +87,17 @@ always @(*) begin
 
     case (opcode_in) 
         `INST_TYPE_B : begin
-            case (func3_in)
-                `INST_FUNC3_BEQ : begin
-                    if (eval_val_in == `CMP_EQ) begin
-                        jump_flag = `JumpEnable;
-                        jump_addr = immB_in;
-                    end
-                end
-                `INST_FUNC3_BNE : begin
-                    if (eval_val_in != `CMP_EQ) begin
-                        jump_flag = `JumpEnable;
-                        jump_addr = immB_in;
-                    end
-                end
-                `INST_FUNC3_BLT : begin
-                    if (eval_val_in == `CMP_LT) begin
-                        jump_flag = `JumpEnable;
-                        jump_addr = immB_in;
-                    end
-                end
-                `INST_FUNC3_BGE : begin
-                    if (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ) begin
-                        jump_flag = `JumpEnable;
-                        jump_addr = immB_in;
-                    end
-                end
-                `INST_FUNC3_BLTU : begin
-                    if (eval_val_in == `CMP_LT) begin
-                        jump_flag = `JumpEnable;
-                        jump_addr = immB_in;
-                    end
-                end
-                `INST_FUNC3_BGEU : begin
-                    if (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ) begin
-                        jump_flag = `JumpEnable;
-                        jump_addr = immB_in;
-                    end
-                end
-            endcase
+            if (`ZeroWord   
+                || (func3_in == `INST_FUNC3_BEQ && eval_val_in == `CMP_EQ)
+                || (func3_in == `INST_FUNC3_BNE && eval_val_in != `CMP_EQ)
+                || (func3_in == `INST_FUNC3_BLT && eval_val_in == `CMP_LT)
+                || (func3_in == `INST_FUNC3_BGE && (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ))
+                || (func3_in == `INST_FUNC3_BLTU && eval_val_in == `CMP_LT)
+                || (func3_in == `INST_FUNC3_BGEU && (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ))
+                ) begin
+                jump_flag = `JumpEnable;
+                jump_addr = inst_addr_in + immB_in;
+            end
         end
     endcase
 end
