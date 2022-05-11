@@ -161,15 +161,7 @@ always @(*) begin
             endcase
         end
 
-        `INST_TYPE_U_lui  : begin
-            reg_we_out          = `WriteEnable;
-            reg_write_addr_out  = rd;
-
-            opnum1_out = immU;
-            opnum2_out = `INST_U_TYPE_SHIFHTLEFT;
-        end
-
-        `INST_TYPE_U_auipc : begin
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
             reg_we_out          = `WriteEnable;
             reg_write_addr_out  = rd;
 
@@ -248,12 +240,7 @@ always @(*) begin
             endcase
         end
 
-        `INST_TYPE_U_lui  : begin
-            eval_en  = `ALUEnable;
-            func_out = `ALUFunc_SLL;
-        end
-
-        `INST_TYPE_U_auipc : begin
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
             eval_en  = `ALUEnable;
             func_out = `ALUFunc_SLL;
         end
