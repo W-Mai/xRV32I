@@ -55,10 +55,10 @@
 `define INST_NOP    32'h00000013
 
 `define INST_OPCODEBus   (`INST_OPCODEWidth-1)  :0
-`define INST_REGBus      (`INST_REGBusWidth-1)     :0
+`define INST_REGBus      (`INST_REGBusWidth-1)  :0
 `define INST_FUNC3Bus    (`INST_FUNC3Width-1)   :0
 `define INST_FUNC7Bus    (`INST_FUNC7Width-1)   :0
-`define INST_IMMBus      (`INST_IMMBusWidth-1)     :0
+`define INST_IMMBus      (`INST_IMMBusWidth-1)  :0
 `define INST_SHAMTBus    (`INST_SHAMTWidth-1)   :0
 
 
@@ -149,7 +149,8 @@
 `define INST_FUNC3_BLTU     3'b110
 `define INST_FUNC3_BGEU     3'b111
 
-// U-type 指令 (没有func3以及其他标识)
+// U-type 指令
+`define INST_U_TYPE_SHIFHTLEFT 12
 
 // J-type 指令 (没有func3以及其他标识)
 

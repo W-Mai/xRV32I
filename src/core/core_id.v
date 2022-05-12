@@ -161,6 +161,14 @@ always @(*) begin
             endcase
         end
 
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
+            reg_we_out          = `WriteEnable;
+            reg_write_addr_out  = rd;
+
+            opnum1_out = immU;
+            opnum2_out = `INST_U_TYPE_SHIFHTLEFT;
+        end
+
         `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
             reg_we_out          = `WriteEnable;
             reg_write_addr_out  = rd;
@@ -230,6 +238,11 @@ always @(*) begin
                     func_out = `ALUFunc_CMPU;
                 end
             endcase
+        end
+
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
+            eval_en  = `ALUEnable;
+            func_out = `ALUFunc_SLL;
         end
 
         `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
