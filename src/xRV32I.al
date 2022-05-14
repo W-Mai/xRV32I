@@ -113,6 +113,14 @@
                     <Attr Name="CompileOrder" Val="13"/>
                 </FileInfo>
             </File>
+            <File Path="core/xSimBus.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="14"/>
+                </FileInfo>
+            </File>
         </Verilog>
     </Source_Files>
     <FileSets>
@@ -123,7 +131,7 @@
     </FileSets>
     <TOP_MODULE>
         <LABEL></LABEL>
-        <MODULE>xencdr</MODULE>
+        <MODULE>xSimBus</MODULE>
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Property>
