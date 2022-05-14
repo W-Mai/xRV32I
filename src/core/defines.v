@@ -37,8 +37,8 @@
 `define ZeroWord        32'h0
 `define OneWord         32'h1
 `define ZeroReg         5'h0
-`define DeviceSelect    5'h1
-`define DeviceNotSel    5'h0
+`define DeviceSelect    1'b1
+`define DeviceNotSel    1'b0
 
 `define HoldFlagBus     2:0         // 暂停流水总线
 `define HoldNone        3'b000      // 不暂停流水总线
