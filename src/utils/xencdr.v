@@ -6,9 +6,9 @@
 `include "../core/defines.v"
 
 module xencdr(
-    input wire[31: 0] val_in,
+    input wire[31: 0]   val_in,
 
-    output reg[31: 0] val_out
+    output reg[4: 0]    val_out
 );
 
 always @(*) begin
