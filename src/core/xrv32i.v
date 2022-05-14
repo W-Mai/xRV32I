@@ -319,9 +319,9 @@ core_ctrl ctrl_inst(
     .jump_addr_in    (ex_jump_addr_out)                 , // 跳转地址
     .hold_flag_ex_in (ex_hold_flag_out)                 , // core_ex暂停流水标志
 
-    .jump_flag_out   ()                                 , // 跳转标志
-    .jump_addr_out   ()                                 , // 跳转地址
-    .hold_flag_out   ()                                   // 暂停流水标志
+    .jump_flag_out   (ctrl_jump_flag_out)               , // 跳转标志
+    .jump_addr_out   (ctrl_jump_addr_out)               , // 跳转地址
+    .hold_flag_out   (ctrl_hold_flag_out)                 // 暂停流水标志
 );
 
 endmodule
