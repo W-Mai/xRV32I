@@ -129,6 +129,14 @@
                     <Attr Name="CompileOrder" Val="15"/>
                 </FileInfo>
             </File>
+            <File Path="periph/per_rom.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="16"/>
+                </FileInfo>
+            </File>
         </Verilog>
     </Source_Files>
     <FileSets>
@@ -161,9 +169,6 @@
                     <gate_sim_model>on</gate_sim_model>
                     <map_sim_model>on</map_sim_model>
                 </GateProperty>
-                <RtlProperty>
-                    <rtl_sim_model>on</rtl_sim_model>
-                </RtlProperty>
             </Strategy>
         </Run>
         <Run Name="phy_1" Type="PhysicalDesign" ConstraintSet="constrain_1" Description="" SynRun="syn_1" Active="true">

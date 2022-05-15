@@ -14,6 +14,7 @@ module xSimBus(
     // 选中哪台设备了
     output reg[`XSimBusDeviceBus]           master_id_out      , // 主设备ID
     output reg[`XSimBusDeviceBus]           device_id_out      , // 从设备ID
+    // inout wire                              master_rw_inout    , // 主设备读写标志
 
     output reg[`XSimBusDeviceAddressBus]    device_addr_out    , // 从设备地址, 绑定所有设备的地址总线
 
@@ -22,10 +23,10 @@ module xSimBus(
     output reg[`MemByteBus]                 data_out           , // 总线数据输出
 
     output reg                              hold_flag_out        // 是否持有总线
-);
+);          
 
 wire[4:0]  master_id;
-
+// reg        master_rw;
 // 总线仲裁
 xencdr xencdr_inst(
     .val_in (devices_in),
@@ -33,6 +34,7 @@ xencdr xencdr_inst(
     .val_out(master_id)
 );
 
+// assign master_rw_inout = master_rw;
 
 always @(posedge clk) begin
     if (rst == `RstEnable) begin
@@ -49,6 +51,7 @@ always @(posedge clk) begin
 
         hold_flag_out   <= master_id == 31 ? `HoldDisable : `HoldEnable;
     end
+
 end
 
 endmodule

@@ -25,6 +25,7 @@
 `define ALUFuncBus              (`ALUFuncBusWidth-1)            :0   // ALU功能描述符
 `define XSimBusDeviceBus        (`XSimBusDeviceWidth-1)         :0   // XSimBus设备描述符
 `define XSimBusDeviceAddressBus (`XSimBusDeviceAddressWidth-1)  :0   // XSimBus设备地址描述符
+`define SelectModeBus                                        1  :0   // 选择模式描述符
 
 `define CPURstAddress `InstAddressBusWidth'h0
 
@@ -51,6 +52,13 @@
 
 `define JumpEnable      1'b1        // 跳转使能
 `define JumpDisable     1'b0        // 跳转禁止
+
+`define SelectAsNone    2'b00       // 无选择
+`define SelectAsMaster  2'b01       // 作为Master
+`define SelectAsDevice  2'b11       // 作为Device
+
+`define RWInoutR        1'b1        // 读写输入为读
+`define RWInoutW        1'b0        // 读写输入为写
 
 `define INST_OPCODEWidth    7
 `define INST_REGBusWidth    `RegisterAddressBusWidth
