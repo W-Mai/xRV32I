@@ -22,15 +22,24 @@ xrv32i_soc xrv32i_soc_inst(
 );
 
 wire[`RegistersByteBus] r27, r28, r29;
+wire[1023:0] 	addr_in;
+wire[4:0] 		master_id;
+wire[31:0] 		addr_in_out;
 
-// assign r27 = xrv32i_inst.regs_inst.regs[27];
-// assign r28 = xrv32i_inst.regs_inst.regs[28];
-// assign r29 = xrv32i_inst.regs_inst.regs[29];
+assign r27 = xrv32i_soc_inst.xrv32i_core.regs_inst.regs[27];
+assign r28 = xrv32i_soc_inst.xrv32i_core.regs_inst.regs[28];
+assign r29 = xrv32i_soc_inst.xrv32i_core.regs_inst.regs[29];
+
+assign addr_in = xrv32i_soc_test.xrv32i_soc_inst.xsimbus_inst.addr_in;
+assign master_id = xrv32i_soc_test.xrv32i_soc_inst.xsimbus_inst.addr_in_inst.who;
+assign addr_in_out = xrv32i_soc_test.xrv32i_soc_inst.xsimbus_inst.addr_in_out;
 
 always begin
 	clk = ~clk; #1
-	if(clk)
+	if(clk) begin
 		$display("r27: %d r28: %d r29: %d", r27, r28, r29);
+		// $display("addr_in: %b master_id: %b addr_in_out: %b", addr_in, master_id, addr_in_out);
+	end
 end
 
 always begin
