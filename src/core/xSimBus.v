@@ -53,7 +53,7 @@ xmulnm #(`XSimBusDeviceWidth, `MemAddressBusWidth) addr_in_inst (
 );
 
 xmulnm #(`XSimBusDeviceWidth, `MemAddressBusWidth) data_in_inst (
-    .who    (master_id),
+    .who    (master_rw_out == `RWInoutW ? master_id : device_id_out),
 
     .val_in (data_in),
     .val_out(data_out)

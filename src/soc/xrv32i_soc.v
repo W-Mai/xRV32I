@@ -183,7 +183,7 @@ xSimBus xsimbus_inst(
     }),
 
     .data_in            ({    // 主从设备读写数据总线
-        pc_data_out         , // 31号设备
+        `ZeroWord           , // 31号设备
         `ZeroWord           , // 30号设备
         xrv32i_core_data_out, // 29号设备
         `ZeroWord           , // 28号设备
