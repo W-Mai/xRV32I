@@ -15,15 +15,15 @@ module xmulnm #(
     output wire[height - 1: 0]                      val_out
 );
 
+wire[height - 1: 0] date_arr[0 : (1 << width) - 1];
+
 genvar i;
 generate 
 for (i = 0 ; i < height ; i = i + 1) begin : ctrl_mux
-   xmuln #(width) mux(
-       .who(who), 
-       .val_in(val_in[(i + 1) * (1 << width) - 1 : i * (1 << width)] ), 
-       .val_out(val_out[i])
-    );
+    assign date_arr[i] = val_in[(i + 1) * (1 << width) - 1 : i * (1 << width)];
 end
 endgenerate
+
+assign val_out = date_arr[who];
 
 endmodule
