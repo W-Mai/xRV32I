@@ -137,6 +137,22 @@
                     <Attr Name="CompileOrder" Val="16"/>
                 </FileInfo>
             </File>
+            <File Path="utils/xmuln.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="17"/>
+                </FileInfo>
+            </File>
+            <File Path="utils/xmulnm.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="18"/>
+                </FileInfo>
+            </File>
         </Verilog>
     </Source_Files>
     <FileSets>
@@ -168,6 +184,7 @@
                 <GateProperty>
                     <gate_sim_model>on</gate_sim_model>
                     <map_sim_model>on</map_sim_model>
+                    <pack_seq_in_io>off</pack_seq_in_io>
                 </GateProperty>
             </Strategy>
         </Run>
