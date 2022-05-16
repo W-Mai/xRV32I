@@ -10,46 +10,23 @@ module xrv32i(
     input rst,
 
     input wire[`InstByteBus]                inst_in         , // 指令输入
-    inout wire[`MemAddressBus]              inst_addr_out   , // 指令地址输出
+    output wire[`MemAddressBus]             inst_addr_out   , // 指令地址输出
     input wire[`SelectModeBus]              pc_select_as_in ,
-    inout wire                              pc_rw_inout     ,
+    output wire                             pc_rw_out       ,
 
     // 主设备总线请求
     output wire                             req_out         , // 主设备总线请求
     // 确定自身是否被选中以及选中的模式
     input wire[`SelectModeBus]              select_as_in    ,
 
-    inout wire[`MemAddressBus]              addr_out        ,
+    output wire[`MemAddressBus]             addr_out        ,
     input wire[`MemByteBus]                 data_in         ,
-    inout wire[`MemByteBus]                 data_out        ,
+    output wire[`MemByteBus]                data_out        ,
 
-    inout wire                              rw_inout        ,
+    output wire                             rw_out          ,
 
     input wire                              bus_hold_flag_in
 );
-
-wire[`MemAddressBus] top_inst_addr_out;
-
-reg pc_rw, rw;
-reg [`MemByteBus] data;
-reg [`MemAddressBus] inst_addr;
-
-// pc_rw_inout输出
-assign pc_rw_inout = pc_select_as_in == `SelectAsMaster ? pc_rw : 1'bz ;
-assign inst_addr_out = pc_rw_inout == `RWInoutR ? inst_addr : `MemAddressBusWidth'bz ;
-assign data_out = rw_inout == `RWInoutR ? data : `MemByteWidth'bz;
-
-
-always @(posedge clk) begin
-    if (rst) begin
-        if (pc_select_as_in == `SelectAsDevice)
-            pc_rw <= pc_rw_inout;
-    end
-    if (pc_select_as_in == `SelectAsMaster) begin
-        pc_rw <= `RWInoutR;
-        inst_addr <= top_inst_addr_out;
-    end
-end
 
 wire[`InstAddressBus] pc_reg_pc_out;
 
@@ -77,8 +54,10 @@ wire[`InstByteBus]      if_inst_out         ;
 core_if if_inst(
 	.pc_addr_in      (pc_reg_pc_out)        , // 程序计数器地址
 
-    .rom_addr_out    (top_inst_addr_out)    , // ROM地址
+    .select_as_in    (pc_select_as_in  )    , // 选择模式
+    .rom_addr_out    (inst_addr_out    )    , // ROM地址
     .rom_data_in     (inst_in          )    , // ROM数据
+    .pc_rw_out       (pc_rw_out        )    ,
 
     .inst_addr_out   (if_inst_addr_out  )   , // 指令地址
     .inst_out        (if_inst_out       )     // 指令

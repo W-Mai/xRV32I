@@ -14,32 +14,33 @@ module per_rom(
 
     input wire[`XSimBusDeviceAddressBus]    addr_in     ,
     input wire[`MemByteBus]                 data_in     ,
-    inout wire[`MemByteBus]                 data_out    ,
+    output reg[`MemByteBus]                 data_out    ,
 
-    inout wire                              rw_inout
+    input wire                              rw_in
 );
 
 reg [`MemByteBus] rom[0:63];
 
-reg [`MemByteBus] data;
+//wire[`XSimBusDeviceAddressBus] real_addr;
+//assign real_addr = {2'b0, addr_in[`XSimBusDeviceAddressWidth-1:2]};
 
-reg rw;
+// 暂时就64个地址吧……没那么多空间
+wire[5:0] real_addr;
+assign real_addr = addr_in[7:2];
 
-assign rw_inout = select_as_in == `SelectAsMaster ? rw : 1'bz;
-assign data_out = rw_inout == `RWInoutR ? data : `MemByteWidth'bz;
+always @(*) begin
+	if (rst == `RstEnable) begin
+    	data_out = `ZeroWord;
+    end else if (rw_in == `RWInoutR)
+    	data_out = rom[real_addr];
+    else
+        data_out = `ZeroWord;
+end
 
 always @(posedge clk) begin
-    if (rst) begin
-        data <= 0;
-        if (select_as_in == `SelectAsMaster)
-            rw <= `RWInoutR;
-    end else begin
-        if (select_as_in == `SelectAsDevice) begin
-            if (rw_inout == `RWInoutR)
-                data <= rom[addr_in>>2];
-            else if(rw_inout == `RWInoutW)
-                rom[addr_in>>2] <= data_in;
-        end
+    if (select_as_in == `SelectAsDevice) begin
+        if(rw_in == `RWInoutW)
+            rom[real_addr] <= data_in;
     end
 end
 
