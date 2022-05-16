@@ -14,17 +14,20 @@ module xSimBus(
     // 选中哪台设备了
     output reg[`XSimBusDeviceBus]           master_id_out      , // 主设备ID
     output reg[`XSimBusDeviceBus]           device_id_out      , // 从设备ID
+    input  wire[`XSimBusRWInBus]            master_rw_in       , // 主设备读写标志
+    output wire                             master_rw_out      , // 主设备读写标志
 
     output reg[`XSimBusDeviceAddressBus]    device_addr_out    , // 从设备地址, 绑定所有设备的地址总线
 
-    input  wire[`MemAddressBus]             addr_in            , // 访问地址
-    input  wire[`MemByteBus]                data_in            , // 总线数据输入
-    output reg[`MemByteBus]                 data_out           , // 总线数据输出
+    input  wire[`XSimBusAddrBus]            addr_in            , // 访问地址
+    input  wire[`XSimBusDataBus]            data_in            , // 总线数据输入
+    output wire[`MemByteBus]                data_out           , // 总线数据输出
 
     output reg                              hold_flag_out        // 是否持有总线
-);
+);          
 
-wire[4:0]  master_id;
+wire[4:0]               master_id;
+wire[`MemAddressBus]    addr_in_out;
 
 // 总线仲裁
 xencdr xencdr_inst(
@@ -34,17 +37,36 @@ xencdr xencdr_inst(
 );
 
 
+xmuln #(`XSimBusDeviceWidth) rw_inst (
+    .who    (master_id),
+
+    .val_in (master_rw_in),
+    .val_out(master_rw_out)
+);
+
+xmulnm #(`XSimBusDeviceWidth, `MemAddressBusWidth) addr_in_inst (
+    .who    (master_id),
+
+    .val_in (addr_in),
+    .val_out(addr_in_out)
+);
+
+xmulnm #(`XSimBusDeviceWidth, `MemAddressBusWidth) data_in_inst (
+    .who    (master_id),
+
+    .val_in (data_in),
+    .val_out(data_out)
+);
+
 always @(posedge clk) begin
     if (rst == `RstEnable) begin
-        data_out        <= `ZeroWord;
         device_addr_out <= 0;
         device_id_out   <= 0;
         master_id_out   <= 0;
         hold_flag_out   <= `HoldDisable;
     end else begin
-        data_out        <= data_in;
-        device_addr_out <= addr_in[`XSimBusDeviceAddressBus];
-        device_id_out   <= addr_in[`XSimBusDeviceNum-1:`XSimBusDeviceAddressWidth];
+        device_addr_out <= addr_in_out[`XSimBusDeviceAddressBus];
+        device_id_out   <= addr_in_out[`XSimBusDeviceNum-1:`XSimBusDeviceAddressWidth];
         master_id_out   <= master_id;
 
         hold_flag_out   <= master_id == 31 ? `HoldDisable : `HoldEnable;
