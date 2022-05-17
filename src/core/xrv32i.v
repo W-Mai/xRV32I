@@ -33,7 +33,7 @@ wire[`InstAddressBus] pc_reg_pc_out;
 // 来自core_ctrl的输出信号
 wire                 ctrl_jump_flag_out     ;
 wire[`MemAddressBus] ctrl_jump_addr_out     ;
-wire                 ctrl_hold_flag_out     ;
+wire[`HoldFlagBus]   ctrl_hold_flag_out     ;
 
 core_pc_reg pc_reg_inst(
 	.clk(clk),
@@ -58,6 +58,8 @@ core_if if_inst(
     .rom_addr_out    (inst_addr_out    )    , // ROM地址
     .rom_data_in     (inst_in          )    , // ROM数据
     .pc_rw_out       (pc_rw_out        )    ,
+
+    .hold_flag_in    (ctrl_hold_flag_out)   , // 流水线暂停标志
 
     .inst_addr_out   (if_inst_addr_out  )   , // 指令地址
     .inst_out        (if_inst_out       )     // 指令
@@ -333,7 +335,9 @@ core_ex ex_inst(
 core_ctrl ctrl_inst(
     .jump_flag_in    (ex_jump_flag_out)                 , // 跳转标志
     .jump_addr_in    (ex_jump_addr_out)                 , // 跳转地址
+
     .hold_flag_ex_in (ex_hold_flag_out)                 , // core_ex暂停流水标志
+    .hold_flag_bus_in(bus_hold_flag_in)                 , // bus暂停流水标志
 
     .jump_flag_out   (ctrl_jump_flag_out)               , // 跳转标志
     .jump_addr_out   (ctrl_jump_addr_out)               , // 跳转地址

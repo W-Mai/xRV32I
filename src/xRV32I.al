@@ -185,7 +185,14 @@
                     <gate_sim_model>on</gate_sim_model>
                     <map_sim_model>on</map_sim_model>
                     <pack_seq_in_io>off</pack_seq_in_io>
+                    <report>verbose</report>
                 </GateProperty>
+                <GlobalProperty>
+                    <message>verbose</message>
+                </GlobalProperty>
+                <RtlProperty>
+                    <keep_hierarchy>all</keep_hierarchy>
+                </RtlProperty>
             </Strategy>
         </Run>
         <Run Name="phy_1" Type="PhysicalDesign" ConstraintSet="constrain_1" Description="" SynRun="syn_1" Active="true">
