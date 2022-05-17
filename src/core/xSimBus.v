@@ -59,7 +59,7 @@ xmulnm #(`XSimBusDeviceWidth, `MemAddressBusWidth) data_in_inst (
     .val_out(data_out)
 );
 
-always @(posedge clk) begin
+always @(*) begin
     if (rst == `RstEnable) begin
         device_addr_out <= 0;
         device_id_out   <= 0;
@@ -72,7 +72,6 @@ always @(posedge clk) begin
 
         hold_flag_out   <= master_id == 31 ? `HoldDisable : `HoldEnable;
     end
-
 end
 
 endmodule
