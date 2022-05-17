@@ -43,7 +43,7 @@ always begin
 end
 
 always begin
-	#60
+	#80
 
 	$finish;
 end
@@ -53,7 +53,7 @@ initial begin
 	$dumpvars; // dump all vars
 
 	$readmemb("rom_data_bin.dat", xrv32i_soc_inst.per_rom_inst.rom); // 读取rom_data.dat中的数据到insts数组中
-	rst = `RstEnable; clk = 1'b0; #0; clk = 1'b1; #0;
+	rst = `RstEnable; clk = 1'b0; #1 clk = 1'b1; #0;
 	rst = `RstDisable;
 end
 
