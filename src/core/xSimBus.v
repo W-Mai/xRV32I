@@ -76,3 +76,87 @@ always @(posedge clk) begin
 end
 
 endmodule
+
+module bus_device_bluster_select(
+    input wire[`XSimBusDeviceBus] master_id_in  ,
+    input wire[`XSimBusDeviceBus] device_id_in  ,
+
+	output wire[`SelectModeBus] device0         ,
+    output wire[`SelectModeBus] device1         ,
+    output wire[`SelectModeBus] device2         ,
+    output wire[`SelectModeBus] device3         ,
+    output wire[`SelectModeBus] device4         ,
+    output wire[`SelectModeBus] device5         ,
+    output wire[`SelectModeBus] device6         ,
+    output wire[`SelectModeBus] device7         ,
+    output wire[`SelectModeBus] device8         ,
+    output wire[`SelectModeBus] device9         ,
+    output wire[`SelectModeBus] device10        ,
+    output wire[`SelectModeBus] device11        ,
+    output wire[`SelectModeBus] device12        ,
+    output wire[`SelectModeBus] device13        ,
+    output wire[`SelectModeBus] device14        ,
+    output wire[`SelectModeBus] device15        ,
+    output wire[`SelectModeBus] device16        ,
+    output wire[`SelectModeBus] device17        ,
+    output wire[`SelectModeBus] device18        ,
+    output wire[`SelectModeBus] device19        ,
+    output wire[`SelectModeBus] device20        ,
+    output wire[`SelectModeBus] device21        ,
+    output wire[`SelectModeBus] device22        ,
+    output wire[`SelectModeBus] device23        ,
+    output wire[`SelectModeBus] device24        ,
+    output wire[`SelectModeBus] device25        ,
+    output wire[`SelectModeBus] device26        ,
+    output wire[`SelectModeBus] device27        ,
+    output wire[`SelectModeBus] device28        ,
+    output wire[`SelectModeBus] device29        ,
+    output wire[`SelectModeBus] device30        ,
+    output wire[`SelectModeBus] device31        
+);
+
+reg [`SelectModeBus] bus_device_bluster_select_as_in[0:31] ;
+
+assign device0  = bus_device_bluster_select_as_in[0]    ;
+assign device1  = bus_device_bluster_select_as_in[1]    ;
+assign device2  = bus_device_bluster_select_as_in[2]    ;
+assign device3  = bus_device_bluster_select_as_in[3]    ;
+assign device4  = bus_device_bluster_select_as_in[4]    ;
+assign device5  = bus_device_bluster_select_as_in[5]    ;
+assign device6  = bus_device_bluster_select_as_in[6]    ;
+assign device7  = bus_device_bluster_select_as_in[7]    ;
+assign device8  = bus_device_bluster_select_as_in[8]    ;
+assign device9  = bus_device_bluster_select_as_in[9]    ;
+assign device10 = bus_device_bluster_select_as_in[10]   ;
+assign device11 = bus_device_bluster_select_as_in[11]   ;
+assign device12 = bus_device_bluster_select_as_in[12]   ;
+assign device13 = bus_device_bluster_select_as_in[13]   ;
+assign device14 = bus_device_bluster_select_as_in[14]   ;
+assign device15 = bus_device_bluster_select_as_in[15]   ;
+assign device16 = bus_device_bluster_select_as_in[16]   ;
+assign device17 = bus_device_bluster_select_as_in[17]   ;
+assign device18 = bus_device_bluster_select_as_in[18]   ;
+assign device19 = bus_device_bluster_select_as_in[19]   ;
+assign device20 = bus_device_bluster_select_as_in[20]   ;
+assign device21 = bus_device_bluster_select_as_in[21]   ;
+assign device22 = bus_device_bluster_select_as_in[22]   ;
+assign device23 = bus_device_bluster_select_as_in[23]   ;
+assign device24 = bus_device_bluster_select_as_in[24]   ;
+assign device25 = bus_device_bluster_select_as_in[25]   ;
+assign device26 = bus_device_bluster_select_as_in[26]   ;
+assign device27 = bus_device_bluster_select_as_in[27]   ;
+assign device28 = bus_device_bluster_select_as_in[28]   ;
+assign device29 = bus_device_bluster_select_as_in[29]   ;
+assign device30 = bus_device_bluster_select_as_in[30]   ;
+assign device31 = bus_device_bluster_select_as_in[31]   ;
+
+integer i;
+always @(*) begin
+    for (i = 0; i<32 ; i=i+1) begin
+        bus_device_bluster_select_as_in[i] = master_id_in == i ? `SelectAsMaster : 
+        							         device_id_in == i ? `SelectAsDevice : 
+                                             `SelectAsNone;
+    end
+end
+
+endmodule

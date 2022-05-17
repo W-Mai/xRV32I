@@ -25,7 +25,7 @@
 `define ALUFuncBus              (`ALUFuncBusWidth-1)                    :0   // ALU功能描述符
 `define XSimBusDeviceBus        (`XSimBusDeviceWidth-1)                 :0   // XSimBus设备描述符
 `define XSimBusDeviceAddressBus (`XSimBusDeviceAddressWidth-1)          :0   // XSimBus设备地址描述符
-`define SelectModeBus                                        1          :0   // 选择模式描述符
+`define SelectModeBus           1                                       :0   // 选择模式描述符
 `define XSimBusRWInBus          `XSimBusDeviceNum-1                     :0   // XSimBus读写描述符
 `define XSimBusAddrBus          `XSimBusDeviceNum*`MemAddressBusWidth-1 :0   // XSimBus地址描述符
 `define XSimBusDataBus          `XSimBusDeviceNum*`MemByteWidth-1       :0   // XSimBus地址描述符

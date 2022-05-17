@@ -221,50 +221,14 @@ xSimBus xsimbus_inst(
     .hold_flag_out      (bus_hold_flag_out)  // 是否持有总线
 );
 
-reg[`SelectModeBus] bus_device_bluster_select_as_in[0:31] ;
+bus_device_bluster_select bus_device_bluster_select_inst(
+    .master_id_in       (bus_master_id_out),
+    .device_id_in       (bus_device_id_out),
 
-assign pc_select_as_in      = bus_device_bluster_select_as_in[31];
-assign no_use30             = bus_device_bluster_select_as_in[30];
-assign xrv32i_select_as_in  = bus_device_bluster_select_as_in[29];
-assign no_use28             = bus_device_bluster_select_as_in[28];
-assign no_use27             = bus_device_bluster_select_as_in[27];
-assign no_use26             = bus_device_bluster_select_as_in[26];
-assign no_use25             = bus_device_bluster_select_as_in[25];
-assign no_use24             = bus_device_bluster_select_as_in[24];
-assign no_use23             = bus_device_bluster_select_as_in[23];
-assign no_use22             = bus_device_bluster_select_as_in[22];
-assign no_use21             = bus_device_bluster_select_as_in[21];
-assign no_use20             = bus_device_bluster_select_as_in[20];
-assign no_use19             = bus_device_bluster_select_as_in[19];
-assign no_use18             = bus_device_bluster_select_as_in[18];
-assign no_use17             = bus_device_bluster_select_as_in[17];
-assign no_use16             = bus_device_bluster_select_as_in[16];
-assign no_use15             = bus_device_bluster_select_as_in[15];
-assign no_use14             = bus_device_bluster_select_as_in[14];
-assign no_use13             = bus_device_bluster_select_as_in[13];
-assign no_use12             = bus_device_bluster_select_as_in[12];
-assign no_use11             = bus_device_bluster_select_as_in[11];
-assign no_use10             = bus_device_bluster_select_as_in[10];
-assign no_use9              = bus_device_bluster_select_as_in[9];
-assign no_use8              = bus_device_bluster_select_as_in[8];
-assign no_use7              = bus_device_bluster_select_as_in[7];
-assign no_use6              = bus_device_bluster_select_as_in[6];
-assign no_use5              = bus_device_bluster_select_as_in[5];
-assign no_use4              = bus_device_bluster_select_as_in[4];
-assign no_use3              = bus_device_bluster_select_as_in[3];
-assign no_use2              = bus_device_bluster_select_as_in[2];
-assign no_use1              = bus_device_bluster_select_as_in[1];
-assign rom_select_as_in     = bus_device_bluster_select_as_in[0];
-
-integer i;
-
-always @(*) begin
-    for (i = 0; i<32 ; i=i+1) begin
-        bus_device_bluster_select_as_in[i] = bus_master_id_out == i ? `SelectAsMaster : 
-        							         bus_device_id_out == i ? `SelectAsDevice : 
-                                             `SelectAsNone;
-    end
-end
+    .device0            (rom_select_as_in ),
+    .device29            (xrv32i_select_as_in ),
+    .device31            (pc_select_as_in     )
+);
 
 per_rom per_rom_inst(
     .clk(clk),
