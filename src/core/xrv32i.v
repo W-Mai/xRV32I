@@ -52,6 +52,8 @@ wire[`InstAddressBus]   if_inst_addr_out    ;
 wire[`InstByteBus]      if_inst_out         ;
 
 core_if if_inst(
+    .rst(rst)                               ,
+
 	.pc_addr_in      (pc_reg_pc_out)        , // 程序计数器地址
 
     .select_as_in    (pc_select_as_in  )    , // 选择模式

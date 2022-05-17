@@ -6,6 +6,8 @@
 `include "../core/defines.v"
 
 module core_if(
+    input rst,
+
 	input wire[`InstAddressBus]     pc_addr_in      , // 程序计数器地址
 
     input wire[`SelectModeBus]      select_as_in    , 
@@ -22,7 +24,7 @@ module core_if(
 
 assign rom_addr_out = pc_addr_in;
 assign inst_addr_out = pc_addr_in;
-assign inst_out = hold_flag_in >= `HoldPc ? `INST_NOP : rom_data_in;
+assign inst_out = (hold_flag_in >= `HoldPc || rst == `RstEnable) ? `INST_NOP : rom_data_in;
 
 always @(*)
     if (select_as_in == `SelectAsMaster) begin
