@@ -225,9 +225,9 @@ bus_device_bluster_select bus_device_bluster_select_inst(
     .master_id_in       (bus_master_id_out),
     .device_id_in       (bus_device_id_out),
 
-    .device0            (rom_select_as_in ),
-    .device29            (xrv32i_select_as_in ),
-    .device31            (pc_select_as_in     )
+    .device0            (rom_select_as_in    ), // 地址范围: 0b00000_000_00_00_00 ~ 0b00000_111_FF_FF_FF (0x00000000 ~ 0x07FFFFFF)
+    .device29           (xrv32i_select_as_in ), // 地址范围: 0b11101_000_00_00_00 ~ 0b11101_111_FF_FF_FF (0xE8000000 ~ 0xEFFFFFFF)
+    .device31           (pc_select_as_in     )  // 地址范围: 0b11111_000_00_00_00 ~ 0b11111_111_FF_FF_FF (0xF8000000 ~ 0xFFFFFFFF)
 );
 
 per_rom per_rom_inst(
