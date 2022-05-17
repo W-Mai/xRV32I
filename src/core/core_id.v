@@ -67,7 +67,7 @@ assign rd       =       inst_in[11:7];                                          
 assign immI     =       {{20{inst_in[31]}}, inst_in[31:20]};                                    // [31:20]
 assign immS     =       {{20{inst_in[31]}}, inst_in[31:25], inst_in[11:7]};                     // [31:25, 11:7]
 assign immB     =       {{20{inst_in[12]}}, inst_in[11], inst_in[30:25], inst_in[11:8], 1'b0};  // [12, 11, 30:25, 11:8]
-assign immU     =       inst_in[31:12];                                                         // [31:12]
+assign immU     =       {inst_in[31:12], `INST_U_TYPE_SHIFHTLEFT'b0};                           // [31:12]
 assign immJ     =       {{12{inst_in[31]}}, inst_in[19:12], inst_in[20], inst_in[30:21], 1'b0}; // [31, 19:12, 20, 30:21]
 assign shamt    =       {27'b0, inst_in[24:20]};                                                // [24:20]
 
@@ -166,7 +166,7 @@ always @(*) begin
             reg_write_addr_out  = rd;
 
             opnum1_out = immU;
-            opnum2_out = `INST_U_TYPE_SHIFHTLEFT;
+            opnum2_out = opcode == `INST_TYPE_U_lui ? `ZeroWord : inst_addr_in;
         end
 
         `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
@@ -242,7 +242,7 @@ always @(*) begin
 
         `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
             eval_en  = `ALUEnable;
-            func_out = `ALUFunc_SLL;
+            func_out = `ALUFunc_ADD;
         end
 
         `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3

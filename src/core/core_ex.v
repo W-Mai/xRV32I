@@ -111,12 +111,8 @@ always @(*) begin
             end
         end
 
-        `INST_TYPE_U_lui : begin
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc : begin
             reg_write_data = eval_val_in;
-        end
-
-        `INST_TYPE_U_auipc : begin
-            reg_write_data = inst_addr_in + eval_val_in;
         end
 
         `INST_TYPE_J : begin
