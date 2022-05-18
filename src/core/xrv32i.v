@@ -331,7 +331,14 @@ core_ex ex_inst(
     // 向core_ctrl发送的信号
     .hold_flag_out          (ex_hold_flag_out)          , // 是否要暂停
     .jump_flag_out          (ex_jump_flag_out)          , // 是否要跳转
-    .jump_addr_out          (ex_jump_addr_out)            // 跳转地址
+    .jump_addr_out          (ex_jump_addr_out)          , // 跳转地址
+
+    // 内存操作相关信号
+    .mem_addr_out           (addr_out   )               , // 访存地址
+    .mem_data_in            (data_in    )               , // 内存数据输入
+    .mem_data_out           (data_out   )               , // 内存数据输出
+    .mem_req_out            (req_out    )               , // 是否要请求内存
+    .mem_rw_out             (rw_out     )                 // 是否要写内存
 );
 
 core_ctrl ctrl_inst(

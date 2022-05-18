@@ -51,7 +51,7 @@ module core_ex(
     input wire[`MemByteBus]             mem_data_in            , // 内存数据输入
     output reg[`MemByteBus]             mem_data_out           , // 内存数据输出
     output reg                          mem_req_out            , // 是否要请求内存
-    output reg                          mem_we_out               // 是否要写内存
+    output reg                          mem_rw_out               // 是否要写内存
 );
 
 always @(*) begin
@@ -80,7 +80,7 @@ always @(*) begin
     mem_addr_out    = `CPURstAddress;
     mem_req_out     = `DeviceNotSel;
     mem_data_out    = `ZeroWord;
-    mem_we_out      = `WriteDisable;
+    mem_rw_out      = `RWInoutR;
 
     case (opcode_in) 
         `INST_TYPE_IL : begin
@@ -119,7 +119,7 @@ always @(*) begin
         `INST_TYPE_S : begin
             mem_addr_out = {eval_val_in[`MemAddressBusWidth-1:2], 2'b0};
             mem_req_out  = `DeviceSelect;
-            mem_we_out   = `WriteEnable;
+            mem_rw_out   = `RWInoutW;
 
             case (func3_in)
                 `INST_FUNC3_SB : begin

@@ -215,7 +215,7 @@ xSimBus xsimbus_inst(
         `ZeroWord           , // 1号设备
         rom_data_out          // 0号设备
     }), // 总线数据输入
-    .data_out           (bus_data_out     ), // 总线数据输入
+    .data_out           (bus_data_out     ), // 总线数据输出
 
     .hold_flag_out      (bus_hold_flag_out)  // 是否持有总线
 );
