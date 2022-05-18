@@ -64,7 +64,6 @@ xrv32i xrv32i_core(
 );
 
 assign led_out = pc_rw_out;
-assign bus_data = bus_data_out;
 
 xSimBus xsimbus_inst(
     .clk(clk),

@@ -97,10 +97,8 @@ always @(*) begin
                     endcase
                 `INST_FUNC3_LH, `INST_FUNC3_LHU :
                     case (eval_val_in[1:0])
-                        2'b00: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[7] }}, mem_data_in[15:0]} ;
-                        2'b01: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[15]}}, mem_data_in[15:0]} ;
-                        2'b10: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[23]}}, mem_data_in[31:16]};
-                        2'b11: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[31]}}, mem_data_in[31:16]};
+                        2'b00, 2'b01: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[7] }}, mem_data_in[15:0]} ;
+                        2'b10, 2'b11: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[23]}}, mem_data_in[31:16]};
                     endcase
                 `INST_FUNC3_LW :
                     reg_write_data_out = mem_data_in;
@@ -114,6 +112,33 @@ always @(*) begin
                     jump_addr_out      = reg1_data_in + immI_in;
 
                     reg_write_data_out = eval_val_in;
+                end
+            endcase
+        end
+
+        `INST_TYPE_S : begin
+            mem_addr_out = {eval_val_in[`MemAddressBusWidth-1:2], 2'b0};
+            mem_req_out  = `DeviceSelect;
+            mem_we_out   = `WriteEnable;
+
+            case (func3_in)
+                `INST_FUNC3_SB : begin
+                    case (eval_val_in[1:0])
+                        2'b00: mem_data_out = {mem_data_in[31:8], reg2_data_in}                         ;
+                        2'b01: mem_data_out = {mem_data_in[31:16], reg2_data_in[7:0], mem_data_in[7:0]} ;
+                        2'b10: mem_data_out = {mem_data_in[31:24], reg2_data_in[7:0], mem_data_in[15:0]};
+                        2'b11: mem_data_out = {reg2_data_in[7:0], mem_data_in[23:0]}                    ;
+                    endcase
+                end
+                `INST_FUNC3_SH : begin
+                    case (eval_val_in[1:0])
+                        2'b00: mem_data_out = {mem_data_in[31:16], reg2_data_in[15:0]}                    ;
+                        2'b01: mem_data_out = {mem_data_in[31:24], reg2_data_in[15:0], mem_data_in[7:0]}  ;
+                        2'b10, 2'b11: mem_data_out = {reg2_data_in[15:0], mem_data_in[23:0]}              ;
+                    endcase
+                end
+                `INST_FUNC3_SW : begin
+                    mem_data_out = reg2_data_in;
                 end
             endcase
         end
