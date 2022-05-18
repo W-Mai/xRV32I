@@ -21,6 +21,7 @@ wire[`XSimBusDeviceBus]             bus_device_id_out               ;
 
 // 各种外设的select_as_in
 wire[`SelectModeBus]                rom_select_as_in                ;
+wire[`SelectModeBus]                ram_select_as_in                ;
 wire[`SelectModeBus]                pc_select_as_in                 ;
 wire[`SelectModeBus]                xrv32i_select_as_in             ;
 
@@ -38,6 +39,7 @@ wire[`MemAddressBus]                xrv32i_core_addr_out            ;
 // 各种外设的data_out
 wire[`MemByteBus]                   xrv32i_core_data_out            ;
 wire[`MemByteBus]                   rom_data_out                    ;
+wire[`MemByteBus]                   ram_data_out                    ;
 
 
 xrv32i xrv32i_core(
@@ -211,7 +213,7 @@ xSimBus xsimbus_inst(
         `ZeroWord           , // 5号设备
         `ZeroWord           , // 4号设备
         `ZeroWord           , // 3号设备
-        `ZeroWord           , // 2号设备
+        ram_data_out        , // 2号设备
         `ZeroWord           , // 1号设备
         rom_data_out          // 0号设备
     }), // 总线数据输入
@@ -225,6 +227,7 @@ bus_device_bluster_select bus_device_bluster_select_inst(
     .device_id_in       (bus_device_id_out),
 
     .device0            (rom_select_as_in    ), // 地址范围: 0b00000_000_00_00_00 ~ 0b00000_111_FF_FF_FF (0x00000000 ~ 0x07FFFFFF)
+    .device2            (ram_select_as_in    ), // 地址范围: 0b00010_000_00_00_00 ~ 0b00010_111_FF_FF_FF (0x10000000 ~ 0x17FFFFFF)
     .device29           (xrv32i_select_as_in ), // 地址范围: 0b11101_000_00_00_00 ~ 0b11101_111_FF_FF_FF (0xE8000000 ~ 0xEFFFFFFF)
     .device31           (pc_select_as_in     )  // 地址范围: 0b11111_000_00_00_00 ~ 0b11111_111_FF_FF_FF (0xF8000000 ~ 0xFFFFFFFF)
 );
@@ -239,6 +242,20 @@ per_rom per_rom_inst(
     .addr_in        (bus_device_addr),
     .data_in        (bus_data_out   ),
     .data_out       (rom_data_out   ),
+
+    .rw_in          (bus_master_rw_out)
+);
+
+per_ram per_ram_inst(
+    .clk(clk),
+    .rst(rst),
+
+    // 确定自身是否被选中以及选中的模式
+    .select_as_in   (ram_select_as_in),
+
+    .addr_in        (bus_device_addr),
+    .data_in        (bus_data_out   ),
+    .data_out       (ram_data_out   ),
 
     .rw_in          (bus_master_rw_out)
 );
