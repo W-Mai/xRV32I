@@ -83,7 +83,7 @@
 // RV32I指令集 共计 10 + 9 + 5 + 1 + 2 + 2 + 6 + 3 + 6 + 1 + 1 + 1 = 47 条指令
 `define INST_TYPE_R         7'b0110011      // 10 条 R-type 指令: add, sub, xor, or, and, sll, srl, sra, slt, sltu
 `define INST_TYPE_I         7'b0010011      //  9 条 I-type 指令: addi, xori, ori, andi, slli, srli, srai, slti, sltiu
-`define INST_TYPE_IL        7'b0010011      //  5 条 I-type 指令: lb, lh, lw, lbu, lhu
+`define INST_TYPE_IL        7'b0000011      //  5 条 I-type 指令: lb, lh, lw, lbu, lhu
 `define INST_TYPE_IJ        7'b1100111      //  1 条 I-type 指令: jalr
 `define INST_TYPE_IE        7'b1110011      //  2 条 I-type 指令: ecall, ebreak
 `define INST_TYPE_IF        7'b0001111      //  2 条 I-type 指令: fence, fence.i
