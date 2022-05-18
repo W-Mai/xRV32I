@@ -135,6 +135,21 @@ always @(*) begin
             endcase
         end
 
+        `INST_TYPE_IL     : begin
+            case (func3)
+                `INST_FUNC3_LB, `INST_FUNC3_LH, `INST_FUNC3_LB, 
+                `INST_FUNC3_LBU, `INST_FUNC3_LHU                : begin
+                    reg_we_out          = `WriteEnable;
+                    reg_write_addr_out  = rd;
+                    write_reg1_addr_out = rs1;
+                    write_reg2_addr_out = `ZeroReg;
+
+                    opnum1_out = read_reg1_data_in;
+                    opnum2_out = immI;
+                end
+            endcase
+        end
+
         `INST_TYPE_IJ     : begin
             case (func3)
                 `INST_FUNC3_JALR   : begin
@@ -217,6 +232,11 @@ always @(*) begin
                     func_out = `ALUFunc_SLTU;
                 end
             endcase
+        end
+
+        `INST_TYPE_IL     : begin
+            eval_en  = `ALUEnable;
+            func_out = `ALUFunc_ADD;
         end
 
         `INST_TYPE_IJ     : begin
