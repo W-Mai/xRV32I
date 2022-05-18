@@ -38,33 +38,25 @@ module core_ex(
     input wire[`INST_SHAMTBus]          shamt_in               , // 指令移位数,
     
     // 向core_regs发送的信号
-    output wire                         reg_we_out             , // 是否要写通用寄存器
-    output wire[`RegistersAddressBus]   reg_write_addr_out     , // 写通用寄存器地址
-    output wire[`RegistersByteBus]      reg_write_data_out     , // 写寄存器数据
+    output reg                          reg_we_out             , // 是否要写通用寄存器
+    output reg[`RegistersAddressBus]    reg_write_addr_out     , // 写通用寄存器地址
+    output reg[`RegistersByteBus]       reg_write_data_out     , // 写寄存器数据
     // 向core_ctrl发送的信号
-    output wire                         hold_flag_out          , // 是否要暂停
-    output wire                         jump_flag_out          , // 是否要跳转
-    output wire[`MemByteBus]            jump_addr_out            // 跳转地址
+    output reg                          hold_flag_out          , // 是否要暂停
+    output reg                          jump_flag_out          , // 是否要跳转
+    output reg[`MemByteBus]             jump_addr_out          , // 跳转地址
 
+    // 内存操作相关信号
+    output reg[`MemAddressBus]          mem_addr_out           , // 访存地址
+    input wire[`MemByteBus]             mem_data_in            , // 内存数据输入
+    output reg[`MemByteBus]             mem_data_out           , // 内存数据输出
+    output reg                          mem_req_out            , // 是否要请求内存
+    output reg                          mem_rw_out               // 是否要写内存
 );
 
-reg                         reg_we;
-reg[`RegistersAddressBus]   reg_write_addr;
-reg[`RegistersByteBus]      reg_write_data;
-reg                         hold_flag;
-reg                         jump_flag;
-reg[`MemByteBus]            jump_addr;
-
-assign reg_we_out           = reg_we;
-assign reg_write_addr_out   = reg_write_addr;
-assign reg_write_data_out   = reg_write_data;
-assign hold_flag_out        = hold_flag;
-assign jump_flag_out        = jump_flag;
-assign jump_addr_out        = jump_addr;
-
 always @(*) begin
-    reg_we          = reg_we_in;
-    reg_write_addr  = reg_write_addr_in;
+    reg_we_out          = reg_we_in;
+    reg_write_addr_out  = reg_write_addr_in;
 
     if (opcode_in == `INST_TYPE_I || opcode_in == `INST_TYPE_R) begin
        case (func_in)
@@ -72,27 +64,81 @@ always @(*) begin
            `ALUFunc_XOR, `ALUFunc_OR , `ALUFunc_AND, 
            `ALUFunc_SLL, `ALUFunc_SRL, `ALUFunc_SRA, 
            `ALUFunc_SLT, `ALUFunc_SLTU :
-                reg_write_data = eval_val_in;
+                reg_write_data_out = eval_val_in;
            default: 
-                reg_write_data = `ZeroWord;
+                reg_write_data_out = `ZeroWord;
        endcase 
     end else begin
-        reg_write_data = `ZeroWord;
+        reg_write_data_out = `ZeroWord;
     end
 
     // core_ctrl默认值
-    hold_flag   = `HoldNone;
-    jump_flag   = `JumpDisable;
-    jump_addr   = `CPURstAddress;
+    hold_flag_out   = `HoldNone;
+    jump_flag_out   = `JumpDisable;
+    jump_addr_out   = `CPURstAddress;
+
+    mem_addr_out    = `CPURstAddress;
+    mem_req_out     = `DeviceNotSel;
+    mem_data_out    = `ZeroWord;
+    mem_rw_out      = `RWInoutR;
 
     case (opcode_in) 
+        `INST_TYPE_IL : begin
+            mem_addr_out = {eval_val_in[`MemAddressBusWidth-1:2], 2'b0};
+            mem_req_out  = `DeviceSelect;
+
+            case (func3_in)
+                `INST_FUNC3_LB, `INST_FUNC3_LBU : 
+                    case (eval_val_in[1:0])
+                        2'b00: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[7] }}, mem_data_in[7:0]}  ;
+                        2'b01: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[15]}}, mem_data_in[15:8]} ;
+                        2'b10: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[23]}}, mem_data_in[23:16]};
+                        2'b11: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[31]}}, mem_data_in[31:24]};
+                    endcase
+                `INST_FUNC3_LH, `INST_FUNC3_LHU :
+                    case (eval_val_in[1:0])
+                        2'b00, 2'b01: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[7] }}, mem_data_in[15:0]} ;
+                        2'b10, 2'b11: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[23]}}, mem_data_in[31:16]};
+                    endcase
+                `INST_FUNC3_LW :
+                    reg_write_data_out = mem_data_in;
+            endcase
+        end
+
         `INST_TYPE_IJ : begin
             case (func3_in)
                 `INST_FUNC3_JALR : begin
-                    jump_flag      = `JumpEnable;
-                    jump_addr      = reg1_data_in + immI_in;
+                    jump_flag_out      = `JumpEnable;
+                    jump_addr_out      = reg1_data_in + immI_in;
 
-                    reg_write_data = eval_val_in;
+                    reg_write_data_out = eval_val_in;
+                end
+            endcase
+        end
+
+        `INST_TYPE_S : begin
+            mem_addr_out = {eval_val_in[`MemAddressBusWidth-1:2], 2'b0};
+            mem_req_out  = `DeviceSelect;
+            mem_rw_out   = `RWInoutW;
+
+            case (func3_in)
+                `INST_FUNC3_SB : begin
+                    case (eval_val_in[1:0])
+                        2'b00: mem_data_out = {mem_data_in[31:8], reg2_data_in}                         ;
+                        2'b01: mem_data_out = {mem_data_in[31:16], reg2_data_in[7:0], mem_data_in[7:0]} ;
+                        2'b10: mem_data_out = {mem_data_in[31:24], reg2_data_in[7:0], mem_data_in[15:0]};
+                        2'b11: mem_data_out = {reg2_data_in[7:0], mem_data_in[23:0]}                    ;
+                    endcase
+                end
+                `INST_FUNC3_SH : begin
+                    case (eval_val_in[1:0])
+                        2'b00: mem_data_out = {mem_data_in[31:16], reg2_data_in[15:0]}                    ;
+                        2'b01: mem_data_out = {mem_data_in[31:24], reg2_data_in[15:0], mem_data_in[7:0]}  ;
+                        2'b10, 2'b11: mem_data_out = {reg2_data_in[15:0], mem_data_in[23:0]}              ;
+                    endcase
+                end
+                `INST_FUNC3_SW : begin
+                    mem_data_out = reg2_data_in;
                 end
             endcase
         end
@@ -106,24 +152,20 @@ always @(*) begin
                 || (func3_in == `INST_FUNC3_BLTU && eval_val_in == `CMP_LT)
                 || (func3_in == `INST_FUNC3_BGEU && (eval_val_in == `CMP_GT || eval_val_in == `CMP_EQ))
                 ) begin
-                jump_flag = `JumpEnable;
-                jump_addr = inst_addr_in + immB_in;
+                jump_flag_out = `JumpEnable;
+                jump_addr_out = inst_addr_in + immB_in;
             end
         end
 
-        `INST_TYPE_U_lui : begin
-            reg_write_data = eval_val_in;
-        end
-
-        `INST_TYPE_U_auipc : begin
-            reg_write_data = inst_addr_in + eval_val_in;
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc : begin
+            reg_write_data_out = eval_val_in;
         end
 
         `INST_TYPE_J : begin
-            jump_flag      = `JumpEnable;
-            jump_addr      = inst_addr_in + immJ_in;
+            jump_flag_out      = `JumpEnable;
+            jump_addr_out      = inst_addr_in + immJ_in;
 
-            reg_write_data = eval_val_in;
+            reg_write_data_out = eval_val_in;
         end
     endcase
 end

@@ -121,6 +121,46 @@
                     <Attr Name="CompileOrder" Val="14"/>
                 </FileInfo>
             </File>
+            <File Path="soc/xrv32i_soc.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="15"/>
+                </FileInfo>
+            </File>
+            <File Path="periph/per_rom.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="16"/>
+                </FileInfo>
+            </File>
+            <File Path="utils/xmuln.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="17"/>
+                </FileInfo>
+            </File>
+            <File Path="utils/xmulnm.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="18"/>
+                </FileInfo>
+            </File>
+            <File Path="periph/per_ram.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="19"/>
+                </FileInfo>
+            </File>
         </Verilog>
     </Source_Files>
     <FileSets>
@@ -131,7 +171,7 @@
     </FileSets>
     <TOP_MODULE>
         <LABEL></LABEL>
-        <MODULE>xSimBus</MODULE>
+        <MODULE>xrv32i_soc</MODULE>
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Property>
@@ -152,9 +192,14 @@
                 <GateProperty>
                     <gate_sim_model>on</gate_sim_model>
                     <map_sim_model>on</map_sim_model>
+                    <pack_seq_in_io>off</pack_seq_in_io>
+                    <report>verbose</report>
                 </GateProperty>
+                <GlobalProperty>
+                    <message>verbose</message>
+                </GlobalProperty>
                 <RtlProperty>
-                    <rtl_sim_model>on</rtl_sim_model>
+                    <keep_hierarchy>all</keep_hierarchy>
                 </RtlProperty>
             </Strategy>
         </Run>

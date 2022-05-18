@@ -10,7 +10,7 @@ module core_if_id(
 	input wire rst,
 
     // 从core_ctrl取得的信号
-    input wire                      hold_flag_in    , // 流水线暂停信号
+    input wire[`HoldFlagBus]        hold_flag_in    , // 流水线暂停信号
 
     input wire[`InstAddressBus]     inst_addr_in    , // 指令地址
     input wire[`InstByteBus]        inst_in         , // 指令
@@ -19,9 +19,11 @@ module core_if_id(
     output wire[`InstByteBus]       inst_out          // 指令
 );
 
-gen_ff #(32) inst_addr_ff	(clk, rst, hold_flag_in,  `CPURstAddress, 	inst_addr_in, 	inst_addr_out);
+assign hold_flag = hold_flag_in >= `HoldIf;
 
-gen_ff #(32) inst_ff		(clk, rst, hold_flag_in,  `INST_NOP, 		inst_in,		inst_out);
+gen_ff #(32) inst_addr_ff	(clk, rst, hold_flag,  `CPURstAddress, 	inst_addr_in, 	inst_addr_out);
+
+gen_ff #(32) inst_ff		(clk, rst, hold_flag,  `INST_NOP, 		inst_in,		inst_out);
 
 
 endmodule
