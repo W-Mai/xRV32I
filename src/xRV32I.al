@@ -162,6 +162,16 @@
                 </FileInfo>
             </File>
         </Verilog>
+        <SDC_FILE>
+            <File Path="xRV32I.sdc">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="constrain_1"/>
+                    <Attr Name="CompileOrder" Val="1"/>
+                </FileInfo>
+            </File>
+        </SDC_FILE>
     </Source_Files>
     <FileSets>
         <FileSet Name="design_1" Type="DesignFiles">

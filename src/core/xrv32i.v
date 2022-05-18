@@ -113,7 +113,10 @@ wire[`INST_IMMBus]          id_immB_out             ;
 wire[`INST_IMMBus]          id_immU_out             ;
 wire[`INST_IMMBus]          id_immJ_out             ;
 wire[`INST_SHAMTBus]        id_shamt_out            ;
-
+// 内存操作相关信号
+wire[`MemAddressBus]        id_mem_addr_out         ;
+wire                        id_mem_req_out          ;
+wire                        id_mem_rw_out           ;
 
 wire[`RegistersByteBus]     regs_read_data1_out     ;
 wire[`RegistersByteBus]     regs_read_data2_out     ;
@@ -121,6 +124,15 @@ wire[`RegistersByteBus]     regs_read_data2_out     ;
 wire                        ex_reg_we_out           ;
 wire[`RegistersAddressBus]  ex_reg_write_addr_out   ;
 wire[`RegistersByteBus]     ex_reg_write_data_out   ;
+// 内存操作相关信号
+wire[`MemAddressBus]        ex_mem_addr_out         ;
+wire                        ex_mem_req_out          ;
+wire                        ex_mem_rw_out           ;
+
+// 决定如何操作内存
+assign req_out  = id_mem_req_out | ex_mem_req_out;
+assign addr_out = id_mem_req_out == `DeviceSelect ? id_mem_addr_out : ex_mem_addr_out;
+assign rw_out   = id_mem_req_out == `DeviceSelect ? id_mem_rw_out   : ex_mem_rw_out  ;
 
 core_id id_inst(
     .rst(rst),
@@ -136,6 +148,11 @@ core_id id_inst(
     // 向core_regs写入的信号
     .write_reg1_addr_out     (id_write_reg1_addr_out)   , // 读通用寄存器1地址
     .write_reg2_addr_out     (id_write_reg2_addr_out)   , // 读通用寄存器2地址
+
+        // 内存操作相关信号
+    .mem_addr_out            (id_mem_addr_out), // 访存地址
+    .mem_req_out             (id_mem_req_out ), // 是否要请求内存
+    .mem_rw_out              (id_mem_rw_out  ), // 是否要写内存
 
     // 向core_ex模块写入的信号
         // inst
@@ -210,6 +227,8 @@ wire[`INST_IMMBus]          id_ex_immU_out             ;
 wire[`INST_IMMBus]          id_ex_immJ_out             ;
 wire[`INST_SHAMTBus]        id_ex_shamt_out            ;
 
+wire[`MemByteBus]           id_ex_mem_data_out         ;
+
 core_id_ex id_ex(
     .clk(clk),
     .rst(rst),
@@ -245,6 +264,8 @@ core_id_ex id_ex(
     .immJ_in                (id_immJ_out  )             , // 指令立即数J型
     .shamt_in               (id_shamt_out )             , // 指令移位数
 
+    .mem_data_in            (data_in      ), // 内存数据
+
 ////////////////////////////////////////////////////////////////////////////////////
     
     // 向core_id等后级发送的信号
@@ -272,7 +293,9 @@ core_id_ex id_ex(
     .immB_out               (id_ex_immB_out  )          , // 指令立即数B型
     .immU_out               (id_ex_immU_out  )          , // 指令立即数U型
     .immJ_out               (id_ex_immJ_out  )          , // 指令立即数J型
-    .shamt_out              (id_ex_shamt_out )            // 指令移位数
+    .shamt_out              (id_ex_shamt_out )          , // 指令移位数
+
+    .mem_data_out           (id_ex_mem_data_out)          // 内存数据
 );
 
 wire[`MemByteBus] alu_res_out;
@@ -334,11 +357,11 @@ core_ex ex_inst(
     .jump_addr_out          (ex_jump_addr_out)          , // 跳转地址
 
     // 内存操作相关信号
-    .mem_addr_out           (addr_out   )               , // 访存地址
-    .mem_data_in            (data_in    )               , // 内存数据输入
-    .mem_data_out           (data_out   )               , // 内存数据输出
-    .mem_req_out            (req_out    )               , // 是否要请求内存
-    .mem_rw_out             (rw_out     )                 // 是否要写内存
+    .mem_addr_out           (ex_mem_addr_out   )        , // 访存地址
+    .mem_data_in            (id_ex_mem_data_out)        , // 内存数据输入
+    .mem_data_out           (data_out          )        , // 内存数据输出
+    .mem_req_out            (ex_mem_req_out    )        , // 是否要请求内存
+    .mem_rw_out             (ex_mem_rw_out     )          // 是否要写内存
 );
 
 core_ctrl ctrl_inst(

@@ -40,6 +40,8 @@ module core_id_ex(
     input wire[`INST_IMMBus]           immJ_in                , // 指令立即数J型
     input wire[`INST_SHAMTBus]         shamt_in               , // 指令移位数
 
+    input wire[`MemByteBus]            mem_data_in            , // 内存数据
+
 ////////////////////////////////////////////////////////////////////////////////////
     
     // 向core_id等后级发送的信号
@@ -67,7 +69,9 @@ module core_id_ex(
     output wire[`INST_IMMBus]          immB_out               , // 指令立即数B型
     output wire[`INST_IMMBus]          immU_out               , // 指令立即数U型
     output wire[`INST_IMMBus]          immJ_out               , // 指令立即数J型
-    output wire[`INST_SHAMTBus]        shamt_out                // 指令移位数
+    output wire[`INST_SHAMTBus]        shamt_out              , // 指令移位数
+
+    output wire[`MemByteBus]           mem_data_out             // 内存数据
 );
 
 assign hold_flag = hold_flag_in >= `HoldId;
@@ -98,5 +102,8 @@ gen_ff #(`INST_IMMBusWidth)     immB_ff(clk, rst, hold_flag,        `ZeroWord,  
 gen_ff #(`INST_IMMBusWidth)     immU_ff(clk, rst, hold_flag,        `ZeroWord,              immU_in,        immU_out            );
 gen_ff #(`INST_IMMBusWidth)     immJ_ff(clk, rst, hold_flag,        `ZeroWord,              immJ_in,        immJ_out            );
 gen_ff #(`INST_SHAMTWidth)      shamt_ff(clk, rst, hold_flag,       `INST_SHAMTWidth'b0,    shamt_in,       shamt_out           );
+
+// 内存相关
+gen_ff #(`MemByteWidth)         mem_data_ff(clk, rst, hold_flag,    `ZeroWord,              mem_data_in,     mem_data_out       );
 
 endmodule

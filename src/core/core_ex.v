@@ -90,15 +90,15 @@ always @(*) begin
             case (func3_in)
                 `INST_FUNC3_LB, `INST_FUNC3_LBU : 
                     case (eval_val_in[1:0])
-                        2'b00: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[7] }}, mem_data_in[7:0]}  ;
-                        2'b01: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[15]}}, mem_data_in[15:8]} ;
-                        2'b10: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[23]}}, mem_data_in[23:16]};
-                        2'b11: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 0 : mem_data_in[31]}}, mem_data_in[31:24]};
+                        2'b00: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 1'b0 : mem_data_in[7] }}, mem_data_in[7:0]}  ;
+                        2'b01: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 1'b0 : mem_data_in[15]}}, mem_data_in[15:8]} ;
+                        2'b10: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 1'b0 : mem_data_in[23]}}, mem_data_in[23:16]};
+                        2'b11: reg_write_data_out = {{24{ func3_in == `INST_FUNC3_LBU ? 1'b0 : mem_data_in[31]}}, mem_data_in[31:24]};
                     endcase
                 `INST_FUNC3_LH, `INST_FUNC3_LHU :
                     case (eval_val_in[1:0])
-                        2'b00, 2'b01: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[7] }}, mem_data_in[15:0]} ;
-                        2'b10, 2'b11: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 0 : mem_data_in[23]}}, mem_data_in[31:16]};
+                        2'b00, 2'b01: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 1'b0 : mem_data_in[7] }}, mem_data_in[15:0]} ;
+                        2'b10, 2'b11: reg_write_data_out = {{16{ func3_in == `INST_FUNC3_LHU ? 1'b0 : mem_data_in[23]}}, mem_data_in[31:16]};
                     endcase
                 `INST_FUNC3_LW :
                     reg_write_data_out = mem_data_in;
