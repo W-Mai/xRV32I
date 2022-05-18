@@ -46,7 +46,12 @@ module core_id(
     output reg[`INST_IMMBus]            immB_out                , // 指令立即数B型
     output reg[`INST_IMMBus]            immU_out                , // 指令立即数U型
     output reg[`INST_IMMBus]            immJ_out                , // 指令立即数J型
-    output reg[`INST_SHAMTBus]          shamt_out                 // 指令移位数
+    output reg[`INST_SHAMTBus]          shamt_out               , // 指令移位数
+
+    // 内存操作相关信号
+    output reg[`MemAddressBus]          mem_addr_out            , // 访存地址
+    output reg                          mem_req_out             , // 是否要请求内存
+    output reg                          mem_rw_out                // 是否要写内存
 );
 
 // 解码后的信号
@@ -99,6 +104,12 @@ always @(*) begin
     reg_write_addr_out  = `ZeroReg;
     write_reg1_addr_out = `ZeroReg;
     write_reg2_addr_out = `ZeroReg;
+
+    // 内存操作相关信号
+    mem_addr_out        = `CPURstAddress;
+    mem_req_out         = `DeviceNotSel;
+    mem_rw_out          = `RWInoutR;
+
     // 判断指令操作码
     case(opcode)
         `INST_TYPE_R      : begin
@@ -136,6 +147,9 @@ always @(*) begin
         end
 
         `INST_TYPE_IL     : begin
+            mem_req_out         = `DeviceSelect;
+            mem_rw_out          = `RWInoutR;
+
             case (func3)
                 `INST_FUNC3_LB, `INST_FUNC3_LH, `INST_FUNC3_LB, 
                 `INST_FUNC3_LBU, `INST_FUNC3_LHU                : begin
@@ -143,9 +157,8 @@ always @(*) begin
                     reg_write_addr_out  = rd;
                     write_reg1_addr_out = rs1;
                     write_reg2_addr_out = `ZeroReg;
-
-                    opnum1_out = read_reg1_data_in;
-                    opnum2_out = immI;
+                    
+                    mem_addr_out        = read_reg1_data_in + immI;
                 end
             endcase
         end
@@ -164,13 +177,15 @@ always @(*) begin
         end
 
         `INST_TYPE_S      :begin
+            mem_req_out         = `DeviceSelect;
+            mem_rw_out          = `RWInoutR;
+
             case (func3)
                 `INST_FUNC3_SB, `INST_FUNC3_SH, `INST_FUNC3_SW   : begin
                     write_reg1_addr_out = rs1;
                     write_reg2_addr_out = rs2;
 
-                    opnum1_out = read_reg1_data_in;
-                    opnum2_out = immI;
+                    mem_addr_out        = read_reg1_data_in + immI;
                 end
             endcase
         end
@@ -246,11 +261,6 @@ always @(*) begin
             endcase
         end
 
-        `INST_TYPE_IL     : begin
-            eval_en  = `ALUEnable;
-            func_out = `ALUFunc_ADD;
-        end
-
         `INST_TYPE_IJ     : begin
             eval_en  = `ALUEnable;
             case (func3)
@@ -258,11 +268,6 @@ always @(*) begin
                     func_out = `ALUFunc_ADD;
                 end
             endcase
-        end
-
-        `INST_TYPE_S      :begin
-            eval_en  = `ALUEnable;
-            func_out = `ALUFunc_ADD;
         end
 
         `INST_TYPE_B      : begin
