@@ -9,6 +9,7 @@ iverilog -o core_xrv32i_soc_test.vvp \
                                 ../utils/xmulnm.v \
                                 ../utils/gen_ff.v \
                                 ../periph/per_rom.v \
+                                ../periph/per_ram.v \
                                 ../core/core_pc_reg.v \
                                 ../core/core_if.v \
                                 ../core/core_if_id.v \
