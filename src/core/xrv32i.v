@@ -9,9 +9,23 @@ module xrv32i(
     input clk,
     input rst,
 
-    input  wire[`InstByteBus]    inst_in         , // 指令输入
+    input wire[`InstByteBus]                inst_in         , // 指令输入
+    output wire[`MemAddressBus]             inst_addr_out   , // 指令地址输出
+    input wire[`SelectModeBus]              pc_select_as_in ,
+    output wire                             pc_rw_out       ,
 
-    output wire[`MemAddressBus]  inst_addr_out     // 指令地址输出
+    // 主设备总线请求
+    output wire                             req_out         , // 主设备总线请求
+    // 确定自身是否被选中以及选中的模式
+    input wire[`SelectModeBus]              select_as_in    ,
+
+    output wire[`MemAddressBus]             addr_out        ,
+    input wire[`MemByteBus]                 data_in         ,
+    output wire[`MemByteBus]                data_out        ,
+
+    output wire                             rw_out          ,
+
+    input wire                              bus_hold_flag_in
 );
 
 wire[`InstAddressBus] pc_reg_pc_out;
@@ -19,7 +33,7 @@ wire[`InstAddressBus] pc_reg_pc_out;
 // 来自core_ctrl的输出信号
 wire                 ctrl_jump_flag_out     ;
 wire[`MemAddressBus] ctrl_jump_addr_out     ;
-wire                 ctrl_hold_flag_out     ;
+wire[`HoldFlagBus]   ctrl_hold_flag_out     ;
 
 core_pc_reg pc_reg_inst(
 	.clk(clk),
@@ -38,10 +52,16 @@ wire[`InstAddressBus]   if_inst_addr_out    ;
 wire[`InstByteBus]      if_inst_out         ;
 
 core_if if_inst(
+    .rst(rst)                               ,
+
 	.pc_addr_in      (pc_reg_pc_out)        , // 程序计数器地址
 
-    .rom_addr_out    (inst_addr_out)        , // ROM地址
-    .rom_data_in     (inst_in      )        , // ROM数据
+    .select_as_in    (pc_select_as_in  )    , // 选择模式
+    .rom_addr_out    (inst_addr_out    )    , // ROM地址
+    .rom_data_in     (inst_in          )    , // ROM数据
+    .pc_rw_out       (pc_rw_out        )    ,
+
+    .hold_flag_in    (ctrl_hold_flag_out)   , // 流水线暂停标志
 
     .inst_addr_out   (if_inst_addr_out  )   , // 指令地址
     .inst_out        (if_inst_out       )     // 指令
@@ -93,7 +113,10 @@ wire[`INST_IMMBus]          id_immB_out             ;
 wire[`INST_IMMBus]          id_immU_out             ;
 wire[`INST_IMMBus]          id_immJ_out             ;
 wire[`INST_SHAMTBus]        id_shamt_out            ;
-
+// 内存操作相关信号
+wire[`MemAddressBus]        id_mem_addr_out         ;
+wire                        id_mem_req_out          ;
+wire                        id_mem_rw_out           ;
 
 wire[`RegistersByteBus]     regs_read_data1_out     ;
 wire[`RegistersByteBus]     regs_read_data2_out     ;
@@ -101,6 +124,15 @@ wire[`RegistersByteBus]     regs_read_data2_out     ;
 wire                        ex_reg_we_out           ;
 wire[`RegistersAddressBus]  ex_reg_write_addr_out   ;
 wire[`RegistersByteBus]     ex_reg_write_data_out   ;
+// 内存操作相关信号
+wire[`MemAddressBus]        ex_mem_addr_out         ;
+wire                        ex_mem_req_out          ;
+wire                        ex_mem_rw_out           ;
+
+// 决定如何操作内存
+assign req_out  = id_mem_req_out | ex_mem_req_out;
+assign addr_out = id_mem_req_out == `DeviceSelect ? id_mem_addr_out : ex_mem_addr_out;
+assign rw_out   = id_mem_req_out == `DeviceSelect ? id_mem_rw_out   : ex_mem_rw_out  ;
 
 core_id id_inst(
     .rst(rst),
@@ -116,6 +148,11 @@ core_id id_inst(
     // 向core_regs写入的信号
     .write_reg1_addr_out     (id_write_reg1_addr_out)   , // 读通用寄存器1地址
     .write_reg2_addr_out     (id_write_reg2_addr_out)   , // 读通用寄存器2地址
+
+        // 内存操作相关信号
+    .mem_addr_out            (id_mem_addr_out), // 访存地址
+    .mem_req_out             (id_mem_req_out ), // 是否要请求内存
+    .mem_rw_out              (id_mem_rw_out  ), // 是否要写内存
 
     // 向core_ex模块写入的信号
         // inst
@@ -190,6 +227,8 @@ wire[`INST_IMMBus]          id_ex_immU_out             ;
 wire[`INST_IMMBus]          id_ex_immJ_out             ;
 wire[`INST_SHAMTBus]        id_ex_shamt_out            ;
 
+wire[`MemByteBus]           id_ex_mem_data_out         ;
+
 core_id_ex id_ex(
     .clk(clk),
     .rst(rst),
@@ -225,6 +264,8 @@ core_id_ex id_ex(
     .immJ_in                (id_immJ_out  )             , // 指令立即数J型
     .shamt_in               (id_shamt_out )             , // 指令移位数
 
+    .mem_data_in            (data_in      ), // 内存数据
+
 ////////////////////////////////////////////////////////////////////////////////////
     
     // 向core_id等后级发送的信号
@@ -252,7 +293,9 @@ core_id_ex id_ex(
     .immB_out               (id_ex_immB_out  )          , // 指令立即数B型
     .immU_out               (id_ex_immU_out  )          , // 指令立即数U型
     .immJ_out               (id_ex_immJ_out  )          , // 指令立即数J型
-    .shamt_out              (id_ex_shamt_out )            // 指令移位数
+    .shamt_out              (id_ex_shamt_out )          , // 指令移位数
+
+    .mem_data_out           (id_ex_mem_data_out)          // 内存数据
 );
 
 wire[`MemByteBus] alu_res_out;
@@ -311,17 +354,26 @@ core_ex ex_inst(
     // 向core_ctrl发送的信号
     .hold_flag_out          (ex_hold_flag_out)          , // 是否要暂停
     .jump_flag_out          (ex_jump_flag_out)          , // 是否要跳转
-    .jump_addr_out          (ex_jump_addr_out)            // 跳转地址
+    .jump_addr_out          (ex_jump_addr_out)          , // 跳转地址
+
+    // 内存操作相关信号
+    .mem_addr_out           (ex_mem_addr_out   )        , // 访存地址
+    .mem_data_in            (id_ex_mem_data_out)        , // 内存数据输入
+    .mem_data_out           (data_out          )        , // 内存数据输出
+    .mem_req_out            (ex_mem_req_out    )        , // 是否要请求内存
+    .mem_rw_out             (ex_mem_rw_out     )          // 是否要写内存
 );
 
 core_ctrl ctrl_inst(
     .jump_flag_in    (ex_jump_flag_out)                 , // 跳转标志
     .jump_addr_in    (ex_jump_addr_out)                 , // 跳转地址
-    .hold_flag_ex_in (ex_hold_flag_out)                 , // core_ex暂停流水标志
 
-    .jump_flag_out   ()                                 , // 跳转标志
-    .jump_addr_out   ()                                 , // 跳转地址
-    .hold_flag_out   ()                                   // 暂停流水标志
+    .hold_flag_ex_in (ex_hold_flag_out)                 , // core_ex暂停流水标志
+    .hold_flag_bus_in(bus_hold_flag_in)                 , // bus暂停流水标志
+
+    .jump_flag_out   (ctrl_jump_flag_out)               , // 跳转标志
+    .jump_addr_out   (ctrl_jump_addr_out)               , // 跳转地址
+    .hold_flag_out   (ctrl_hold_flag_out)                 // 暂停流水标志
 );
 
 endmodule

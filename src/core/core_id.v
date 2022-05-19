@@ -46,7 +46,12 @@ module core_id(
     output reg[`INST_IMMBus]            immB_out                , // 指令立即数B型
     output reg[`INST_IMMBus]            immU_out                , // 指令立即数U型
     output reg[`INST_IMMBus]            immJ_out                , // 指令立即数J型
-    output reg[`INST_SHAMTBus]          shamt_out                 // 指令移位数
+    output reg[`INST_SHAMTBus]          shamt_out               , // 指令移位数
+
+    // 内存操作相关信号
+    output reg[`MemAddressBus]          mem_addr_out            , // 访存地址
+    output reg                          mem_req_out             , // 是否要请求内存
+    output reg                          mem_rw_out                // 是否要写内存
 );
 
 // 解码后的信号
@@ -67,7 +72,7 @@ assign rd       =       inst_in[11:7];                                          
 assign immI     =       {{20{inst_in[31]}}, inst_in[31:20]};                                    // [31:20]
 assign immS     =       {{20{inst_in[31]}}, inst_in[31:25], inst_in[11:7]};                     // [31:25, 11:7]
 assign immB     =       {{20{inst_in[12]}}, inst_in[11], inst_in[30:25], inst_in[11:8], 1'b0};  // [12, 11, 30:25, 11:8]
-assign immU     =       inst_in[31:12];                                                         // [31:12]
+assign immU     =       {inst_in[31:12], `INST_U_TYPE_SHIFHTLEFT'b0};                           // [31:12]
 assign immJ     =       {{12{inst_in[31]}}, inst_in[19:12], inst_in[20], inst_in[30:21], 1'b0}; // [31, 19:12, 20, 30:21]
 assign shamt    =       {27'b0, inst_in[24:20]};                                                // [24:20]
 
@@ -99,6 +104,12 @@ always @(*) begin
     reg_write_addr_out  = `ZeroReg;
     write_reg1_addr_out = `ZeroReg;
     write_reg2_addr_out = `ZeroReg;
+
+    // 内存操作相关信号
+    mem_addr_out        = `CPURstAddress;
+    mem_req_out         = `DeviceNotSel;
+    mem_rw_out          = `RWInoutR;
+
     // 判断指令操作码
     case(opcode)
         `INST_TYPE_R      : begin
@@ -135,6 +146,23 @@ always @(*) begin
             endcase
         end
 
+        `INST_TYPE_IL     : begin
+            mem_req_out         = `DeviceSelect;
+            mem_rw_out          = `RWInoutR;
+
+            case (func3)
+                `INST_FUNC3_LB, `INST_FUNC3_LH, `INST_FUNC3_LB, 
+                `INST_FUNC3_LBU, `INST_FUNC3_LHU                : begin
+                    reg_we_out          = `WriteEnable;
+                    reg_write_addr_out  = rd;
+                    write_reg1_addr_out = rs1;
+                    write_reg2_addr_out = `ZeroReg;
+                    
+                    mem_addr_out        = read_reg1_data_in + immI;
+                end
+            endcase
+        end
+
         `INST_TYPE_IJ     : begin
             case (func3)
                 `INST_FUNC3_JALR   : begin
@@ -144,6 +172,20 @@ always @(*) begin
 
                     opnum1_out = inst_addr_in;
                     opnum2_out = `InstByteWidth / 8;
+                end
+            endcase
+        end
+
+        `INST_TYPE_S      :begin
+            mem_req_out         = `DeviceSelect;
+            mem_rw_out          = `RWInoutR;
+
+            case (func3)
+                `INST_FUNC3_SB, `INST_FUNC3_SH, `INST_FUNC3_SW   : begin
+                    write_reg1_addr_out = rs1;
+                    write_reg2_addr_out = rs2;
+
+                    mem_addr_out        = read_reg1_data_in + immI;
                 end
             endcase
         end
@@ -159,6 +201,14 @@ always @(*) begin
                     opnum2_out = read_reg2_data_in;
                 end
             endcase
+        end
+
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
+            reg_we_out          = `WriteEnable;
+            reg_write_addr_out  = rd;
+
+            opnum1_out = immU;
+            opnum2_out = opcode == `INST_TYPE_U_lui ? `ZeroWord : inst_addr_in;
         end
 
         `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3
@@ -230,6 +280,11 @@ always @(*) begin
                     func_out = `ALUFunc_CMPU;
                 end
             endcase
+        end
+
+        `INST_TYPE_U_lui, `INST_TYPE_U_auipc  : begin
+            eval_en  = `ALUEnable;
+            func_out = `ALUFunc_ADD;
         end
 
         `INST_TYPE_J      : begin       // 因为J-Type指令只有jal一条指令，所以这里没有判断func3

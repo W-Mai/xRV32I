@@ -3,23 +3,32 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-`define RegistersNumWidth           5                           // 寄存器个数宽度为5位
-`define InstAddressBusWidth         32                          // 实际指令地址宽度为32位
-`define RegisterAddressBusWidth     `RegistersNumWidth          // 寄存器地址宽度为32位
-`define RegistersNum                32                          // 寄存器个数为32个
-`define InstByteWidth               32                          // 实际指令字节宽度为32位
-`define RegistersByteWidth          32                          // 寄存器字节宽度为32位
-`define MemAddressBusWidth          32                          // 内存地址宽度为32位
-`define MemByteWidth                32                          // 内存字节宽度为32位
-`define ALUFuncBusWidth             5                           // ALU功能宽度为5位
+`define RegistersNumWidth           5                                               // 寄存器个数宽度为5位
+`define InstAddressBusWidth         32                                              // 实际指令地址宽度为32位
+`define RegisterAddressBusWidth     `RegistersNumWidth                              // 寄存器地址宽度为32位
+`define RegistersNum                32                                              // 寄存器个数为32个
+`define InstByteWidth               32                                              // 实际指令字节宽度为32位
+`define RegistersByteWidth          32                                              // 寄存器字节宽度为32位
+`define MemAddressBusWidth          32                                              // 内存地址宽度为32位
+`define MemByteWidth                32                                              // 内存字节宽度为32位
+`define ALUFuncBusWidth             5                                               // ALU功能宽度为5位
+`define XSimBusDeviceNum            32                                              // XSimBus设备数为32个
+`define XSimBusDeviceWidth          5                                               // XSimBus设备宽度为5位
+`define XSimBusDeviceAddressWidth   `XSimBusDeviceNum - `XSimBusDeviceWidth         // XSimBus设备地址宽度为5位
 
-`define InstAddressBus      (`InstAddressBusWidth-1)        :0   // 实际指令地址描述符
-`define InstByteBus         (`InstByteWidth-1)              :0   // 实际指令字节描述符
-`define RegistersAddressBus (`RegisterAddressBusWidth-1)    :0   // 寄存器地址描述符
-`define RegistersByteBus    (`RegistersByteWidth-1)         :0   // 寄存器字节描述符
-`define MemAddressBus       (`MemAddressBusWidth-1)         :0   // 内存地址描述符
-`define MemByteBus          (`MemByteWidth-1)               :0   // 数据字节描述符
-`define ALUFuncBus          (`ALUFuncBusWidth-1)            :0   // ALU功能描述符
+`define InstAddressBus          (`InstAddressBusWidth-1)                :0   // 实际指令地址描述符
+`define InstByteBus             (`InstByteWidth-1)                      :0   // 实际指令字节描述符
+`define RegistersAddressBus     (`RegisterAddressBusWidth-1)            :0   // 寄存器地址描述符
+`define RegistersByteBus        (`RegistersByteWidth-1)                 :0   // 寄存器字节描述符
+`define MemAddressBus           (`MemAddressBusWidth-1)                 :0   // 内存地址描述符
+`define MemByteBus              (`MemByteWidth-1)                       :0   // 数据字节描述符
+`define ALUFuncBus              (`ALUFuncBusWidth-1)                    :0   // ALU功能描述符
+`define XSimBusDeviceBus        (`XSimBusDeviceWidth-1)                 :0   // XSimBus设备描述符
+`define XSimBusDeviceAddressBus (`XSimBusDeviceAddressWidth-1)          :0   // XSimBus设备地址描述符
+`define SelectModeBus           1                                       :0   // 选择模式描述符
+`define XSimBusRWInBus          `XSimBusDeviceNum-1                     :0   // XSimBus读写描述符
+`define XSimBusAddrBus          `XSimBusDeviceNum*`MemAddressBusWidth-1 :0   // XSimBus地址描述符
+`define XSimBusDataBus          `XSimBusDeviceNum*`MemByteWidth-1       :0   // XSimBus地址描述符
 
 `define CPURstAddress `InstAddressBusWidth'h0
 
@@ -32,6 +41,8 @@
 `define ZeroWord        32'h0
 `define OneWord         32'h1
 `define ZeroReg         5'h0
+`define DeviceSelect    1'b1
+`define DeviceNotSel    1'b0
 
 `define HoldFlagBus     2:0         // 暂停流水总线
 `define HoldNone        3'b000      // 不暂停流水总线
@@ -45,6 +56,13 @@
 `define JumpEnable      1'b1        // 跳转使能
 `define JumpDisable     1'b0        // 跳转禁止
 
+`define SelectAsNone    2'b00       // 无选择
+`define SelectAsMaster  2'b01       // 作为Master
+`define SelectAsDevice  2'b11       // 作为Device
+
+`define RWInoutR        1'b1        // 读写输入为读
+`define RWInoutW        1'b0        // 读写输入为写
+
 `define INST_OPCODEWidth    7
 `define INST_REGBusWidth    `RegisterAddressBusWidth
 `define INST_FUNC3Width     3
@@ -55,17 +73,17 @@
 `define INST_NOP    32'h00000013
 
 `define INST_OPCODEBus   (`INST_OPCODEWidth-1)  :0
-`define INST_REGBus      (`INST_REGBusWidth-1)     :0
+`define INST_REGBus      (`INST_REGBusWidth-1)  :0
 `define INST_FUNC3Bus    (`INST_FUNC3Width-1)   :0
 `define INST_FUNC7Bus    (`INST_FUNC7Width-1)   :0
-`define INST_IMMBus      (`INST_IMMBusWidth-1)     :0
+`define INST_IMMBus      (`INST_IMMBusWidth-1)  :0
 `define INST_SHAMTBus    (`INST_SHAMTWidth-1)   :0
 
 
 // RV32I指令集 共计 10 + 9 + 5 + 1 + 2 + 2 + 6 + 3 + 6 + 1 + 1 + 1 = 47 条指令
 `define INST_TYPE_R         7'b0110011      // 10 条 R-type 指令: add, sub, xor, or, and, sll, srl, sra, slt, sltu
 `define INST_TYPE_I         7'b0010011      //  9 条 I-type 指令: addi, xori, ori, andi, slli, srli, srai, slti, sltiu
-`define INST_TYPE_IL        7'b0010011      //  5 条 I-type 指令: lb, lh, lw, lbu, lhu
+`define INST_TYPE_IL        7'b0000011      //  5 条 I-type 指令: lb, lh, lw, lbu, lhu
 `define INST_TYPE_IJ        7'b1100111      //  1 条 I-type 指令: jalr
 `define INST_TYPE_IE        7'b1110011      //  2 条 I-type 指令: ecall, ebreak
 `define INST_TYPE_IF        7'b0001111      //  2 条 I-type 指令: fence, fence.i
@@ -149,7 +167,8 @@
 `define INST_FUNC3_BLTU     3'b110
 `define INST_FUNC3_BGEU     3'b111
 
-// U-type 指令 (没有func3以及其他标识)
+// U-type 指令
+`define INST_U_TYPE_SHIFHTLEFT 12
 
 // J-type 指令 (没有func3以及其他标识)
 
